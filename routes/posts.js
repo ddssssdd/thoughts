@@ -11,10 +11,10 @@ router.use(function timelog(req,res,next){
 });
 
 router.get("/",function(req,res){
-	res.render("posts/index",{post:{}});
+	res.redirect("index");
 });
 router.get("/index",function(req,res){
-	res.render("posts/index",{post:{}});
+	res.render("posts/index",{post:{},attachments:[]});
 });
 
 router.get("/list",function(req,res){
@@ -41,10 +41,12 @@ router.post("/add", multipartMiddleware,function(req,res){
 	//console.log(req.files);
 	//res.json(req.files);
 	//return;
+	debugger;
 	var mongoose = require("mongoose");
 	var post_model = mongoose.model("posts");
 	var update_files_post = function(post_id){
 		for(var key in req.files){
+
 			var file = req.files[key];		
 			console.log(file);		
 			if (file && file.size>0 && file.path!=''){

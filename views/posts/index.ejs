@@ -14,10 +14,12 @@
 					</form>
 					<br />
 					<ul>
+						<% if (attachments) { %>
 						<% attachments.forEach(function(item){ %>
 							<li> <img src="<%= item.fileId.link %>" width="200px" height="160px" id="<%= item.fileId.id %>"/> </li>
 							
 						<% }); %>
+						<% } %>
 					</ul>
 				</div><!-- /.main-content -->
 
