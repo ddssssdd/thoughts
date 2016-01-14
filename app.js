@@ -11,6 +11,7 @@ var fs = require("fs");
 
 
 mongo.connect(config.mongo);
+mongo.set("debug",true);
 
 /*
 var model_path = __dirname + "\\models";
@@ -30,8 +31,9 @@ fs.readdirSync(model_path ,function(err,files){
 
 var Users =require("./models/users");
 require("./models/posts");
+require("./models/uploads");
+require("./models/attachments");
 
-debugger;
 
 /*
 var users = new Users();
@@ -60,8 +62,11 @@ var app = express();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+app.engine('html', require('ejs').renderFile);
+
 app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -76,11 +81,15 @@ app.use(session(settings));
 
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'bower_components')));  //normal way to develop
+app.use(express.static(path.join(__dirname, 'uploads')));
 //app.use(express.static(path.join(__dirname, 'public'))); //only html and javascript, no template need.
 
-
+app.use(logger('dev'));
 var route = require('./routes/index');
 route(app);
+
+app.use("/users",require("./routes/users"));
+app.use("/posts",require("./routes/posts"));
 
 app.listen(process.env.PORT || config.app, function () {
   console.log('Website <<Thoughts>> listening on port ' + (process.env.PORT || config.app));

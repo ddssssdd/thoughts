@@ -1,0 +1,31 @@
+<% include ../shared/header %>
+
+		<div class="main-container" >
+			<div class="main-container-inner">
+				<div class="siderbar">
+				</div>
+				<div class="main-content">
+					<form action="/posts/add" method="POST" enctype='multipart/form-data'>
+							<input type="hidden" name="id" value="<%= post.id %>"/>
+							<textarea type="text" name="content" width="100%" placeholder="content"><%= post.content %></textarea>
+							<input type="file" name="file"/>
+							<input type="file" name="file2"/>
+							<input type="submit" value="<%= post.id?'Update':'Add' %>"/>
+					</form>
+					<br />
+					<ul>
+						<% attachments.forEach(function(item){ %>
+							<li> <img src="<%= item.fileId.link %>" width="200px" height="160px" id="<%= item.fileId.id %>"/> </li>
+							
+						<% }); %>
+					</ul>
+				</div><!-- /.main-content -->
+
+				
+			</div><!-- /.main-container-inner -->
+
+			
+		</div><!-- /.main-container -->
+
+
+<% include ../shared/footer %>
