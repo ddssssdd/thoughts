@@ -1,4 +1,3 @@
-<script>
 angular.module('commonService', []).config(function($httpProvider){
  $httpProvider.interceptors.push('StatusInterceptor');
 });
@@ -91,4 +90,3 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 });
 
 
-</script>

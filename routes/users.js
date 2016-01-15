@@ -5,7 +5,19 @@ var router = express.Router();
 
 router.use(function timelog(req,res,next){
 	console.log('Time',Date.now());
+
 	next();
+});
+router.use(function(req,res,next){
+	console.log(req.url);
+	
+	if (["/","/login","/logout","/info"].indexOf(req.url.toLowerCase())>-1){		
+		next();
+	}else if (req.session.is_login){
+		next();
+	}else{
+		res.redirect("/users/login?url="+req.originalUrl);
+	}
 });
 
 router.get("/",function(req,res){
@@ -53,9 +65,21 @@ router.get("/remove/:id",function(req,res){
 		res.redirect("/users/list");
 	});
 });
+router.post("/info",function(req,res){
+	var user_model = require("mongoose").model("users");
+	user_model.findOne({_id:req.session.user},function(err,user){
+		//res.json({result:user,error:err,param:{_id:req.params.id}});
+		if (user){
+			res.json({status:true,result:user});	
+		}else{
+			res.json({status:false});
+		}
+		
+	});
+});
 
 router.get("/login",function(req,res){
-	res.render("login/index");
+	res.render("login/index",{return_url:req.query.url || "/index"});
 });
 router.post("/login",function(req,res){
 	//res.json(req.body);
@@ -70,8 +94,13 @@ router.post("/login",function(req,res){
 			req.session.is_login = true;
 			req.session.user = user.id;	
 		}
-		
-		res.redirect("/index");
+		var url = req.body.return_url;
+		res.redirect(url);
 	});
-})
+});
+router.get("/logout",function(req,res){
+	delete req.session.is_login;
+	delete req.session.user;
+	res.redirect("/index");
+});
 module.exports = router;

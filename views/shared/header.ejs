@@ -1,36 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<title>Thoughts version 0.0.1</title>
-		<meta name="keywords" content="" />
-		<meta name="description" content="" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<!-- basic styles -->
-		<link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
-	</head>
+<head>
+	<meta charset="utf-8" />
+	<title>Thoughts version 0.0.1</title>
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<!-- basic styles -->
+	<link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="/angular-bootstrap-datetimepicker/src/css/datetimepicker.css"/>
+	
+</head>
 
-	<body ng-app="thoughts_app">
-		<div class="navbar navbar-default">
-			
-			<div class="navbar-container" id="navbar-container">
-				<div class="navbar-header pull-left">
-					<a href="#" class="navbar-brand">
-						<small>
-							<i class="icon-leaf"></i>
-							Thoughts is only star!
-						</small>
-					</a><!-- /.brand -->
-				</div><!-- /.navbar-header -->
-				<div class="navbar-header pull-right">
-					<a href="#" class="navbar-brand">
-						<small>
-							<i class="icon-leaf"></i>							
-							
-						</small>
-					</a><!-- /.brand -->
-				</div><!-- /.navbar-header -->
-
-				
-			</div><!-- /.container -->
-		</div>
+<body ng-app="thoughts_app">
+	<div class="navbar navbar-default" ng-controller="LoginCtrl">
+		<div class="navbar-container" id="navbar-container">
+			<div class="navbar-header pull-left">
+				<a href="#" class="navbar-brand">
+					<small>
+					<i class="icon-leaf"></i>
+					Thoughts is only star!
+					</small>
+				</a><!-- /.brand -->
+			</div><!-- /.navbar-header -->
+			<div class="navbar-header pull-right">
+				<a href="#" class="navbar-brand">
+					<small>
+						<i class="icon-leaf"></i>
+							<a href="/users/logout" ng-if="is_login">{{user.name}}</a>
+						
+							<a href="/users/login" ng-if="!is_login">Login</a>
+						
+					</small>
+				</a><!-- /.brand -->
+			</div><!-- /.navbar-header -->
+		</div><!-- /.container -->
+	</div>

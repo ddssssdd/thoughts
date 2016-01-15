@@ -82,6 +82,7 @@ app.use(session(settings));
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'bower_components')));  //normal way to develop
 app.use(express.static(path.join(__dirname, 'uploads')));
+app.use(express.static(path.join(__dirname, 'public')));
 //app.use(express.static(path.join(__dirname, 'public'))); //only html and javascript, no template need.
 
 app.use(logger('dev'));

@@ -8,6 +8,7 @@
 					<form action="/users/login" method="POST">
 							<input type="text" name="username" placeholder="Username"/>
 							<input type="password" name="password" placeholder="Password" />
+							<input type="hidden" name="return_url" value="<%= return_url %>" />
 							<input type="submit" value="Login"/>
 					</form>
 					
@@ -19,5 +20,6 @@
 			
 		</div><!-- /.main-container -->
 
-		
+<% include ../shared/load_public %>
+
 <% include ../shared/footer %>

@@ -9,6 +9,13 @@ router.use(function timelog(req,res,next){
 	console.log('Time',Date.now());
 	next();
 });
+router.use(function(req,res,next){
+	if (req.session.is_login){
+		next();
+	}else{
+		res.redirect("/users/login?url="+req.originalUrl);
+	}
+});
 
 router.get("/",function(req,res){
 	res.redirect("index");

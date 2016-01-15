@@ -1,10 +1,28 @@
+	
+<script>
+angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService){
+	$scope.user =null;
+	$scope.is_login = false;
+	$scope.load_data = function(){
+		var url ="/users/info";
+		httpService(url,{},function(json){
+			if (json.status){
+				$scope.is_login = true;
+				$scope.user = json.result;
+			}else{
+				$scope.is_login = false;
+				$scope.user = null;
+			}
 
-		<script src="/jquery/dist/jquery.min.js"></script>
-		<script src="/angular/angular.min.js"></script>
-		<% include app_public %>
-		<script>
-			var app = angular.module("thoughts_app",[]);
-		</script>
+			console.log(json);
+		},null);
+	}
+	$scope.load_data();
+});	
+</script>
+
+	<!--          This is footor of html body -->
+
 	
 </body>
 </html>
