@@ -42,7 +42,29 @@ router.get("/attach_list",function(req,res){
 	});
 });
 
-
+router.post("/upload_image",multipartMiddleware,function(req,res){
+	
+	//var binary = require("binary");
+	/*
+	 $imdata =  substr($imdata,strpos($imdata,",")+1);
+	 // put the data to a file
+	 $file_name = "./upload/{$user['id']}/".time().".png";
+	 file_put_contents($file_name, base64_decode($imdata));
+	 */
+	var data = req.body.imgdata;
+	data = data.substr(data.indexOf(",")+1);
+	var buf = new Buffer(data,'base64');	
+	var fs = require("fs");
+	var filename = __dirname +"\\..\\uploads\\temp\\"+Date.now()+".png";
+	fs.writeFile(filename,buf,"base64",function(err){
+		if (!err){
+			res.json({status:true,result:filename})	;
+		}else{
+			res.json({status:false,message:"Can not upload the image.",error:err})
+		}
+	});
+	
+});
 router.post("/add", multipartMiddleware,function(req,res){
 	console.log(req.body);
 	//console.log(req.files);

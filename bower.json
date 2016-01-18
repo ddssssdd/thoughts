@@ -1,0 +1,28 @@
+{
+  "name": "Thoughts",
+  "description": "Thoughts project",
+  "main": "",
+  "authors": [
+    "Steven Fu <sfu@synvata.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/ddssssdd/thoughts",
+  "moduleType": [
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-bootstrap-datetimepicker": "~0.4.0",
+    "angular-md5": "~0.1.10",
+    "angular": "angularjs#~1.4.8",
+    "moment": "~2.11.1",
+    "bootstrap": "~3.3.6",
+    "angular-hotkeys": "chieffancypants/angular-hotkeys#~1.6.0"
+  }
+}

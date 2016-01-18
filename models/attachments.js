@@ -11,3 +11,4 @@ var attachmentSchema = {
 }
 var attachments =mongoose.model("attachments",attachmentSchema); 
 module.exports = attachments;
+console.log("Register attachments success!");

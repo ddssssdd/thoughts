@@ -8,10 +8,7 @@ var postSchema = {
 		ref:"users"
 	}
 }
-var attachSchema = {
-	post: Schema.ObjectId,
-	file_id:Schema.ObjectId
-}
-mongoose.model("post_attahments",attachSchema);
+
 posts =mongoose.model("posts",postSchema);
 module.exports = posts;
+console.log("Register posts success!");

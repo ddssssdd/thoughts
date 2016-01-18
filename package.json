@@ -17,6 +17,8 @@
     "express-session": "^1.13.0",
     "mongoose": "^4.3.5",
     "morgan": "^1.6.1",
+    "node-schedule": "^0.6.0",
+    "raw-body": "^2.1.5",
     "serve-favicon": "^2.3.0"
   }
 }

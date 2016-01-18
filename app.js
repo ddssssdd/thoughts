@@ -8,51 +8,41 @@ var mongo = require("mongoose");
 var config = require('./config');
 var flash = require('connect-flash');
 var fs = require("fs");
+ 
 
 
 mongo.connect(config.mongo);
 mongo.set("debug",true);
 
-/*
-var model_path = __dirname + "\\models";
-console.log(model_path);
-fs.readdirSync(model_path ,function(err,files){
-	console.log(err);
+
+var model_path = __dirname + "\\models\\";
+//console.log(model_path);
+fs.readdir(model_path ,function(err,files){  //Sync does not work!	
 	for(var i=0;i<files.length;i++){
-		console.log(file);
-		if (~file.indexOf('.js')){
+		var file = files[i];		
+		if (~file.indexOf('.js')){			
 			require("./models/"+file);
 		}
 	}
 });
-*/
+model_path = __dirname + "\\schedules\\";
+fs.readdir(model_path ,function(err,files){  //Sync does not work!	
+	for(var i=0;i<files.length;i++){
+		var file = files[i];		
+		if (~file.indexOf('.js')){			
+			require("./schedules/"+file);
+		}
+	}
+});
+
 
 //console.log(process.env);
-
+/*
 var Users =require("./models/users");
 require("./models/posts");
 require("./models/uploads");
 require("./models/attachments");
-
-
-/*
-var users = new Users();
-users.user = {name:'micheal',email:'a@a.com'};
-users.save(function(err){
-	console.log(err);
-});
 */
-
-/*
-
-mongo.model("users").collection.insert({name:'micheal',email:'a@a.com'});
-mongo.model("users").find({},function(err,users){
-	for(var user in users){
-		console.dir(user);
-	}
-});
-*/
-
 
 
 var session = require('express-session');
@@ -67,8 +57,8 @@ app.engine('html', require('ejs').renderFile);
 
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb',extended: true }));
 app.use(cookieParser());
 
 var store = new MongoStore({
@@ -79,6 +69,7 @@ var settings = config.session;
 settings.store = store;
 app.use(session(settings));
 
+
 app.use(flash());
 app.use(express.static(path.join(__dirname, 'bower_components')));  //normal way to develop
 app.use(express.static(path.join(__dirname, 'uploads')));
@@ -86,6 +77,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 //app.use(express.static(path.join(__dirname, 'public'))); //only html and javascript, no template need.
 
 app.use(logger('dev'));
+/*
+var getRawBody = require('raw-body')
+var typer = require('media-typer')
+
+app.use(function (req, res, next) {
+  getRawBody(req, {
+    length: req.headers['content-length'],
+    limit: '1000mb',
+    //encoding: 'utf-8'//typer.parse(req.headers['content-type']).parameters.charset
+  }, function (err, string) {
+    if (err) return next(err)
+    req.text = string
+    next()
+  })
+})
+*/
 var route = require('./routes/index');
 route(app);
 

@@ -9,3 +9,4 @@ var userSchema = {
 }
 users = mongoose.model("users",userSchema);
 module.exports = users;
+console.log("Register users success!");

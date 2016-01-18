@@ -12,3 +12,4 @@ var uploadSchema = {
 	}
 }
 module.exports = mongoose.model("uploads",uploadSchema);
+console.log("Register uploads success!");

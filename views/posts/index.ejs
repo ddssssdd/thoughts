@@ -32,6 +32,7 @@
 				<% }); %>
 			<% } %>
 			</ul>
+			<div id="edpen_img" style="background:white;"></div>
 		</div><!-- /.main-content -->
 
 	</div><!-- /.main-container-inner -->
@@ -43,9 +44,45 @@
 
 <script>
 	
-	angular.module("thoughts_app").controller("PostCtrl",function($scope,httpService){
+	angular.module("thoughts_app").controller("PostCtrl",function($scope,httpService,hotkeys){
 		$scope.data = {test:'2016-1-15 12:30:43'};
+		hotkeys.bindTo($scope)
+		.add({
+			combo:'ctrl+v',
+			description:'Ctrl + V to upload photo',
+			callback:function(){
+				console.log("Paste...");
+			}
+		})
 	});		
+	document.onpaste = function(event){
+		var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+		console.log(JSON.stringify(items)); // will give you the mime types
+		for (index in items) {
+			var item = items[index];
+			if (item.kind === 'file') {
+				var blob = item.getAsFile();
+				var reader = new FileReader();
+				reader.onload = function(event){
+					//console.log(event.target.result);
+					var data = event.target.result;
+					$("#edpen_img").empty();
+	 				var image  = "<img  width='150px' height='150px' src='"+data+"'/>";
+	 				$(image).appendTo("#edpen_img");
+	 				/*
+	 				return this.canvas.toDataURL("image/png");
+	 				*/
+	 				var url = "/posts/upload_image";
+	 				$.post(url,{imgdata:data},function(json){
+		 				console.log(json);
+	 				});
+					
+				}; // data url!
+					
+				reader.readAsDataURL(blob);
+			}
+		}
+	}
 </script>
 
 
