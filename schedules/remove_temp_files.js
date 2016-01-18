@@ -12,14 +12,14 @@ var j = schedule.scheduleJob(date, function(){
 
 j.cancel();
 */
-
+var temppath = __dirname +"\\..\\uploads\\temp\\";
 var rule = new schedule.RecurrenceRule();
 rule.second = 20;
 var delete_files =[];
 var j = schedule.scheduleJob(rule, function(){	
 	console.log("Begin recording the temp folder");
   	var fs = require("fs");
-  	var temppath = __dirname +"\\..\\uploads\\temp\\";
+  	
   	fs.readdir(temppath,function(err,files){
   		delete_files =[];
   		for(var i =0;i<files.length;i++){
@@ -29,14 +29,14 @@ var j = schedule.scheduleJob(rule, function(){
   	})
 });
 var rule2 = new schedule.RecurrenceRule();
-rule2.second = 40;
+rule2.second = 30;
 schedule.scheduleJob(rule2,function(){
 	console.log("Begin cleaning the temp folder");
 	for(var i=0;i<delete_files.length;i++){
 		var file = delete_files[i];
 		console.log("cleaning ... "+file);
 		var fs = require("fs");
-  		fs.unlinkSync(file,function(err){
+  		fs.unlink(temppath+file,function(err){
   			if (err){
   				console.log(err);
   			}
