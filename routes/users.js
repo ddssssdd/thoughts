@@ -10,7 +10,7 @@ router.use(function timelog(req,res,next){
 });
 router.use(function(req,res,next){
 	console.log(req.url);
-	debugger;
+	
 	//if (["/login","/logout","/info"].indexOf(req.url.toLowerCase())>-1){
 
 	var skipped = function(url){

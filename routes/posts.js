@@ -48,52 +48,54 @@ router.post("/add", multipartMiddleware,function(req,res){
 	//console.log(req.files);
 	//res.json(req.files);
 	//return;
-	debugger;
+	
 	var mongoose = require("mongoose");
 	var post_model = mongoose.model("posts");
 	var update_files_post = function(post_id){
-		for(var key in req.files){
+		
+		var move_and_save = function(filepath,size,type,fileoriginal){
+			
+			var oldname = path.basename(filepath);
+			var newname = __dirname +"\\..\\uploads\\posts\\"+oldname;			
+			fs.rename(filepath,newname,function(err){
+				if (err){
+					console.log(err);
+					//res.redirect(req.url);
+					return;
+				}
+				fs.unlink(filepath,function(err){
+					if (err){
+						console.log("Can not drop "+filepath);
+					}
+					
+					var upload = new Upload({filename:fileoriginal,
+						link:"/posts/"+oldname,
+						size:size,
+						type:type,
+						user:req.user,
+						uploaded_date:Date.now()
+					});
+					upload.save(function(err,data){
+						if (!err){
+							mongoose.model("attachments").collection.insert(
+								//{post:post_id,file_id:data._doc._id.id}
+								{ownerId:post_id,fileId:upload.id}
+							);
+						}
+					});
+				});
 
+			});	
+		}
+		for(var key in req.files){
 			var file = req.files[key];		
 			console.log(file);		
 			if (file && file.size>0 && file.path!=''){
 				var path = require("path");
 				var Upload = mongoose.model("uploads");
 				var fs = require("fs");
-				var oldname = path.basename(file.path);
-				var newname = __dirname +"\\..\\uploads\\posts\\"+oldname;			
-				fs.rename(file.path,newname,function(err){
-					if (err){
-						console.log(err);
-						//res.redirect(req.url);
-						return;
-					}
-					fs.unlink(file.path,function(err){
-						if (err){
-							console.log("Can not drop "+file.path);
-						}
-						
-						var upload = new Upload({filename:file.originalFilename,
-							link:"/posts/"+oldname,
-							size:file.size,
-							type:file.type,
-							user:req.user,
-							uploaded_date:Date.now()
-						});
-						upload.save(function(err,data){
-							if (!err){
-								mongoose.model("attachments").collection.insert(
-									//{post:post_id,file_id:data._doc._id.id}
-									{ownerId:post_id,fileId:upload.id}
-								);
-							}
-						});
-					});
-
-				});	
-			
-			}
-		
+				move_and_save(file.path,file.size,file.type,file.originalFilename);
+			}		
 		}	
 	}
 	//res.json(req.body);
