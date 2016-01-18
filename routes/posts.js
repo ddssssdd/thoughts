@@ -1,8 +1,10 @@
 var express = require("express");
 var router = express.Router();
 var multipart = require('connect-multiparty');
-var multipartMiddleware = multipart({uploadDir:__dirname +"\\..\\uploads\\temp\\"});
+var temp_path = __dirname +"/../uploads/temp/";
+var multipartMiddleware = multipart({uploadDir:temp_path});
 
+console.log(router.app);
 
 
 router.use(function timelog(req,res,next){
@@ -55,7 +57,7 @@ router.post("/upload_image",multipartMiddleware,function(req,res){
 	data = data.substr(data.indexOf(",")+1);
 	var buf = new Buffer(data,'base64');	
 	var fs = require("fs");
-	var filename = __dirname +"\\..\\uploads\\temp\\"+Date.now()+".png";
+	var filename = temp_path + Date.now()+".png";
 	fs.writeFile(filename,buf,"base64",function(err){
 		if (!err){
 			res.json({status:true,result:filename})	;

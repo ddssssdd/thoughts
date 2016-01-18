@@ -8,5 +8,9 @@
       "maxAge": 2592000000
     }
   },
-  "mongo": "mongodb://127.0.0.1/thoughts"
+  "mongo": "mongodb://127.0.0.1/thoughts",
+  "uploads": "/uploads/temp/",
+  "models": ["/models/"],
+  "schedules": ["/schedules/"]
+
 }

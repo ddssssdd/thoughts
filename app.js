@@ -7,33 +7,16 @@ var bodyParser = require('body-parser');
 var mongo = require("mongoose");
 var config = require('./config');
 var flash = require('connect-flash');
-var fs = require("fs");
+
  
 
 
 mongo.connect(config.mongo);
 mongo.set("debug",true);
 
+config.base_folder = __dirname;
 
-var model_path = __dirname + "\\models\\";
-//console.log(model_path);
-fs.readdir(model_path ,function(err,files){  //Sync does not work!	
-	for(var i=0;i<files.length;i++){
-		var file = files[i];		
-		if (~file.indexOf('.js')){			
-			require("./models/"+file);
-		}
-	}
-});
-model_path = __dirname + "\\schedules\\";
-fs.readdir(model_path ,function(err,files){  //Sync does not work!	
-	for(var i=0;i<files.length;i++){
-		var file = files[i];		
-		if (~file.indexOf('.js')){			
-			require("./schedules/"+file);
-		}
-	}
-});
+require("./auto_load")(config);
 
 
 //console.log(process.env);
