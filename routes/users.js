@@ -10,8 +10,19 @@ router.use(function timelog(req,res,next){
 });
 router.use(function(req,res,next){
 	console.log(req.url);
-	
-	if (["/","/login","/logout","/info"].indexOf(req.url.toLowerCase())>-1){		
+	debugger;
+	//if (["/login","/logout","/info"].indexOf(req.url.toLowerCase())>-1){
+
+	var skipped = function(url){
+		var should_skipped_array = ["/login","/logout","/info"];
+		for(var i=0;i<should_skipped_array.length;i++){
+			var s = should_skipped_array[i];
+			if (url.indexOf(s)==0)
+				return true;
+		}
+		return false;
+	}		
+	if (skipped(req.url.toLowerCase())){		
 		next();
 	}else if (req.session.is_login){
 		next();
