@@ -59,7 +59,7 @@ router.post("/upload_image",multipartMiddleware,function(req,res){
 			//res.json({status:true,result:{name:filename,size:data.length,type:"image/jpeg"}});
 			var Upload = require("mongoose").model("uploads");
 			var upload = new Upload({filename:originalFilename,
-				link:"/posts/"+originalFilename,
+				link:config.uploads.link_base+originalFilename,
 				size:data.size,
 				type:"image/jpeg",
 				user:req.user,
@@ -120,7 +120,7 @@ router.post("/add", multipartMiddleware,function(req,res){
 					}
 					
 					var upload = new Upload({filename:fileoriginal,
-						link:"/posts/"+oldname,
+						link:config.uploads.link_base+oldname,
 						size:size,
 						type:type,
 						user:req.user,

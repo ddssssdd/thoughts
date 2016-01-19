@@ -10,8 +10,9 @@
   },
   "mongo": "mongodb://127.0.0.1/thoughts",
   "uploads": { 
-    "temp":"/uploads/temp/",
-    "posts":"/uploads/posts/"
+    "temp":"/public/uploads/temp/",
+    "posts":"/public/uploads/posts/",
+    "link_base":"/uploads/posts/"
     },
   "models": ["/models/"],
   "schedules": ["/schedules/"]

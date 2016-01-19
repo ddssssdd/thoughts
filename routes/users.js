@@ -32,7 +32,15 @@ router.use(function(req,res,next){
 });
 
 router.get("/",function(req,res){
-	res.render("users/index",{user:{}});
+	//res.render("users/index",{user:{}});
+	var m = require("mongoose");
+	var UserLog = m.model("user_logs");
+	var userlog = new UserLog({content:"test",user:req.session.user});
+	userlog.save(function(err,result){
+		result.findByUser(req.session.user,function(err,data){
+			res.json(data);
+		})
+	});
 });
 router.get("/index",function(req,res){
 	res.render("users/index",{user:{}});
