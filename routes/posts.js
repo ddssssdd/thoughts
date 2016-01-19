@@ -46,24 +46,32 @@ router.get("/attach_list",function(req,res){
 	});
 });
 
-router.post("/upload_image",multipartMiddleware,function(req,res){
-	
-	//var binary = require("binary");
-	/*
-	 $imdata =  substr($imdata,strpos($imdata,",")+1);
-	 // put the data to a file
-	 $file_name = "./upload/{$user['id']}/".time().".png";
-	 file_put_contents($file_name, base64_decode($imdata));
-	 */
+router.post("/upload_image",multipartMiddleware,function(req,res){	
 	var data = req.body.imgdata;
 	data = data.substr(data.indexOf(",")+1);
 	var buf = new Buffer(data,'base64');	
 	var fs = require("fs");
-	var temp_path = __dirname +"/.." +config.uploads.temp;
-	var filename = temp_path + Date.now()+".png";
+	var temp_path = __dirname +"/.." +config.uploads.posts;
+	var originalFilename = Date.now()+".png"
+	var filename = temp_path + originalFilename;
 	fs.writeFile(filename,buf,"base64",function(err){
 		if (!err){
-			res.json({status:true,result:filename})	;
+			//res.json({status:true,result:{name:filename,size:data.length,type:"image/jpeg"}});
+			var Upload = require("mongoose").model("uploads");
+			var upload = new Upload({filename:originalFilename,
+				link:"/posts/"+originalFilename,
+				size:data.size,
+				type:"image/jpeg",
+				user:req.user,
+				uploaded_date:Date.now()
+			});
+			upload.save(function(err,data){
+				if (!err){
+					res.json({status:true,result:upload});					
+				}else{
+					res.json({status:false,message:"Save to uploads error"});
+				}
+			});
 		}else{
 			res.json({status:false,message:"Can not upload the image.",error:err})
 		}
@@ -71,7 +79,7 @@ router.post("/upload_image",multipartMiddleware,function(req,res){
 	
 });
 router.post("/add", multipartMiddleware,function(req,res){
-	//console.log(req.body);
+	console.log(req.body.attachments);
 	//console.log(req.files);
 	//res.json(req.files);
 	//return;
@@ -79,7 +87,21 @@ router.post("/add", multipartMiddleware,function(req,res){
 	var mongoose = require("mongoose");
 	var post_model = mongoose.model("posts");
 	var update_files_post = function(post_id){
-		
+		//step 1 save paste files;
+		debugger;
+		if (req.body.attachments && req.body.attachments.length>0){
+			if (typeof(req.body.attachments)=="string"){
+				req.body.attachments =[req.body.attachments];
+			}
+			var ObjectId = mongoose.Types.ObjectId;
+			for(var i=0;i<req.body.attachments.length;i++){
+				var attach = req.body.attachments[i];
+				mongoose.model("attachments").collection.insert(
+					{ownerId:post_id,fileId:new ObjectId(attach)}
+				);
+			}
+		}
+		//step 2 save upload files;
 		var move_and_save = function(filepath,size,type,fileoriginal){
 			
 			var oldname = path.basename(filepath);
@@ -136,8 +158,9 @@ router.post("/add", multipartMiddleware,function(req,res){
 
 		post_model.findOneAndUpdate({_id:req.body.id},update,function(err,post){
 			update_files_post(req.body.id);
-			res.redirect("list");
+			
 		});
+		res.redirect("list");
 	}else{
 		var post = new post_model(update);
 		post.save(function(err){

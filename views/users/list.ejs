@@ -1,46 +1,35 @@
 <% include ../shared/header %>
 
-		<div class="main-container" >
-			
-
-			<div class="main-container-inner">
-				<div class="siderbar">
-				</div>
-
-				<div class="main-content">
-					<table class="table table-bordered">
-						<thead>
-							<tr>
-								<td>Username</td>
-								<td>Email</td>
-								<td>Password</td>
-								<td>Points</td>
-								<td></td>
-							</tr>
-						</thead>
-						<tbody>
-							<% for(var i=0;i<users.length;i++){ var user = users[i]; %>
-							<tr>
-								<td> <%= user.name %> </td>
-								<td> <%= user.email %> </td>
-								<td> <%= user.password %> </td>
-								<td> <%= user.points %> </td>
-								<td>
-									<a class="btn" href="edit/<%= user.id %>">Edit </a>
-									<a class="btn" href="remove/<%= user.id %>">Remove </a>
-								</td>
-							</tr>
-							<% } %>
-						</tbody>
-					</table>
-					
-				</div><!-- /.main-content -->
-
+		
 				
-			</div><!-- /.main-container-inner -->
+<table class="table table-bordered">
+	<thead>
+		<tr>
+			<td>Username</td>
+			<td>Email</td>
+			<td>Password</td>
+			<td>Points</td>
+			<td></td>
+		</tr>
+	</thead>
+	<tbody>
+		<% for(var i=0;i<users.length;i++){ var user = users[i]; %>
+		<tr>
+			<td> <%= user.name %> </td>
+			<td> <%= user.email %> </td>
+			<td> <%= user.password %> </td>
+			<td> <%= user.points %> </td>
+			<td>
+				<a class="btn" href="edit/<%= user.id %>">Edit </a>
+				<a class="btn" href="remove/<%= user.id %>">Remove </a>
+			</td>
+		</tr>
+		<% } %>
+	</tbody>
+</table>
+					
+				
 
-			
-		</div><!-- /.main-container -->
 <% include ../shared/load_public %>
 		
 <% include ../shared/footer %>

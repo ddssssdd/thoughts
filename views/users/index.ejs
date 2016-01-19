@@ -1,26 +1,19 @@
 <% include ../shared/header %>
 
-		<div class="main-container" >
-			<div class="main-container-inner">
-				<div class="siderbar">
-				</div>
-				<div class="main-content">
-					<form action="/users/add" method="POST">
-							<input type="hidden" name="id" value="<%= user.id %>"/>
-							<input type="text" name="name" placeholder="username" value="<%= user.name %>"/>
-							<input type="email" name="email" placeholder="email"  value="<%= user.email %>"/>
-							<input type="password" name="password" placeholder="password"  value="<%= user.password %>"/>
-							<input type="text" name="points" placeholder="points"  value="<%= user.points %>"/>							
-							<input type="submit" value="<%= user.id?'Update':'Add' %>"/>
-					</form>
-					
-				</div><!-- /.main-content -->
-
+		
 				
-			</div><!-- /.main-container-inner -->
+<form action="/users/add" method="POST">
+		<input type="hidden" name="id" value="<%= user.id %>"/>
+		<input type="text" name="name" placeholder="username" value="<%= user.name %>"/>
+		<input type="email" name="email" placeholder="email"  value="<%= user.email %>"/>
+		<input type="password" name="password" placeholder="password"  value="<%= user.password %>"/>
+		<input type="text" name="points" placeholder="points"  value="<%= user.points %>"/>							
+		<input type="submit" value="<%= user.id?'Update':'Add' %>"/>
+</form>
+					
+				
 
-			
-		</div><!-- /.main-container -->
+		
 <% include ../shared/load_public %>
 		
 <% include ../shared/footer %>

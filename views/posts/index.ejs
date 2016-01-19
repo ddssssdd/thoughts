@@ -1,42 +1,40 @@
 <% include ../shared/header %>
-<div class="main-container" >
-	<div class="main-container-inner">
-		<div class="siderbar">
-		</div>
-		<div class="main-content" ng-controller="PostCtrl">
-			<form action="/posts/add" method="POST" enctype='multipart/form-data'>
-				<input type="hidden" name="id" value="<%= post.id %>"/>
-				<textarea type="text" name="content" width="100%" placeholder="content"><%= post.content %></textarea>
-				<input type="file" name="file"/>
-				<input type="file" name="file2"/>
-				<input type="submit" value="<%= post.id?'Update':'Add' %>"/>
-					<div class="dropdown">
-						<a class="dropdown-toggle my-toggle-select" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
-						<div class="input-append">
-							<input type="text" class="input-large" data-ng-model="data.test">
-							<span class="add-on"><i class="icon-calendar"></i></span>
-						</div>
-						</a>
-						<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-							<datetimepicker data-ng-model="data.test"
-	            				data-datetimepicker-config="{ dropdownSelector: '.my-toggle-select' }"></datetimepicker>
-						</ul>
-					</div>
-			</form>
-			<br />
-			<ul>
-			<% if (attachments) { %>
-				<% attachments.forEach(function(item){ %>
-					<li> <img src="<%= item.fileId.link %>" width="200px" height="160px" id="<%= item.fileId.id %>"/> </li>
-					
-				<% }); %>
-			<% } %>
-			</ul>
-			<div id="edpen_img" style="background:white;"></div>
-		</div><!-- /.main-content -->
 
-	</div><!-- /.main-container-inner -->
-</div><!-- /.main-container -->
+<div  ng-controller="PostCtrl">
+	<form action="/posts/add" method="POST" enctype='multipart/form-data' id="edit_form">
+		<input type="hidden" name="id" value="<%= post.id %>"/>
+		<textarea type="text" name="content" width="100%" placeholder="content"><%= post.content %></textarea>
+		<input type="file" name="file"/>
+		<input type="file" name="file2"/>
+		<input type="submit" value="<%= post.id?'Update':'Add' %>"/>
+			<div class="dropdown">
+				<a class="dropdown-toggle my-toggle-select" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
+				<div class="input-append">
+					<input type="text" class="input-large" data-ng-model="data.test">
+					<span class="add-on"><i class="icon-calendar"></i></span>
+				</div>
+				</a>
+				<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+					<datetimepicker data-ng-model="data.test"
+        				data-datetimepicker-config="{ dropdownSelector: '.my-toggle-select' }"></datetimepicker>
+				</ul>
+			</div>
+	</form>
+	<br />
+	<ul>
+	<% if (attachments) { %>
+		<% attachments.forEach(function(item){ %>
+			<li> <img src="<%= item.fileId.link %>" width="200px" height="160px" id="<%= item.fileId.id %>"/> </li>
+			
+		<% }); %>
+	<% } %>
+	</ul>
+	<ul id="edpen_img" style="background:white;">
+	</ul>
+	
+</div><!-- /.main-content -->
+
+	
 
 
 <% include ../shared/load_public %>
@@ -66,8 +64,8 @@
 				reader.onload = function(event){
 					//console.log(event.target.result);
 					var data = event.target.result;
-					$("#edpen_img").empty();
-	 				var image  = "<img  width='150px' height='150px' src='"+data+"'/>";
+					//$("#edpen_img").empty();
+	 				var image  = "<li><img  width='150px' height='150px' src='"+data+"'/></li>";
 	 				$(image).appendTo("#edpen_img");
 	 				/*
 	 				return this.canvas.toDataURL("image/png");
@@ -75,6 +73,8 @@
 	 				var url = "/posts/upload_image";
 	 				$.post(url,{imgdata:data},function(json){
 		 				console.log(json);
+		 				var hidden = "<input type='hidden' name='attachments' value='"+json.result._id+"' />";
+		 				$(hidden).appendTo("#edit_form");
 	 				});
 					
 				}; // data url!

@@ -21,7 +21,7 @@ var Remove_temp = function(config){
   console.log("Begin setup schedule to clear temp folder: " + temppath);
 
   var rule = new schedule.RecurrenceRule();
-  rule.second = 20;
+  rule.minute = 20;
   var delete_files =[];
   var j = schedule.scheduleJob(rule, function(){  
     console.log("Begin recording the temp folder");
@@ -36,7 +36,7 @@ var Remove_temp = function(config){
       })
   });
   var rule2 = new schedule.RecurrenceRule();
-  rule2.second = 30;
+  rule2.minute = 21;
   schedule.scheduleJob(rule2,function(){
     console.log("Begin cleaning the temp folder");
     for(var i=0;i<delete_files.length;i++){

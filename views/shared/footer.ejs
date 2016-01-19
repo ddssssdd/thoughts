@@ -1,4 +1,14 @@
+<!-- PAGE CONTENT ENDS -->
+			</div>
+		</div>
+	</div>
+
 	
+	
+</div><!-- /.main-content -->
+</div><!-- /.main-container-inner -->
+
+</div><!-- /.main-container -->
 <script>
 angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService){
 	$scope.user =null;
@@ -18,6 +28,13 @@ angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpServic
 		},null);
 	}
 	$scope.load_data();
+	$scope.logout = function(event){
+		event.stopPropagation();
+		window.location = "/users/logout";
+	}
+	$scope.login = function(event){
+		window.location = "/users/login";
+	}
 });	
 </script>
 
