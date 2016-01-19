@@ -32,6 +32,7 @@ var session = require('express-session');
 var MongoStore = require('connect-mongodb-session')(session);
 
 var app = express();
+app.config = config;
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');

@@ -1,7 +1,7 @@
 var Auto_load = function(config){
 	var fs = require("fs");
 	
-	console.log(config);
+	//console.log(config);
 	var load_dir = function(folder){
 		fs.readdir(config.base_folder + folder ,function(err,files){  //Sync does not work!	
 			if (err){

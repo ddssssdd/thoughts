@@ -1,10 +1,10 @@
 var express = require("express");
 var router = express.Router();
 var multipart = require('connect-multiparty');
-var temp_path = __dirname +"/../uploads/temp/";
+var config = require("../config");
+var temp_path = __dirname +"/.." + config.uploads.temp;
 var multipartMiddleware = multipart({uploadDir:temp_path});
 
-console.log(router.app);
 
 
 router.use(function timelog(req,res,next){
@@ -23,6 +23,8 @@ router.get("/",function(req,res){
 	res.redirect("index");
 });
 router.get("/index",function(req,res){
+	
+	//console.log(req.app.config);
 	res.render("posts/index",{post:{},attachments:[]});
 });
 
@@ -57,6 +59,7 @@ router.post("/upload_image",multipartMiddleware,function(req,res){
 	data = data.substr(data.indexOf(",")+1);
 	var buf = new Buffer(data,'base64');	
 	var fs = require("fs");
+	var temp_path = __dirname +"/.." +config.uploads.temp;
 	var filename = temp_path + Date.now()+".png";
 	fs.writeFile(filename,buf,"base64",function(err){
 		if (!err){
@@ -68,7 +71,7 @@ router.post("/upload_image",multipartMiddleware,function(req,res){
 	
 });
 router.post("/add", multipartMiddleware,function(req,res){
-	console.log(req.body);
+	//console.log(req.body);
 	//console.log(req.files);
 	//res.json(req.files);
 	//return;
@@ -80,7 +83,9 @@ router.post("/add", multipartMiddleware,function(req,res){
 		var move_and_save = function(filepath,size,type,fileoriginal){
 			
 			var oldname = path.basename(filepath);
-			var newname = __dirname +"\\..\\uploads\\posts\\"+oldname;			
+			//var newname = __dirname +"\\..\\uploads\\posts\\"+oldname;			
+			
+			var newname = __dirname +"/.." +config.uploads.posts + oldname;			
 			fs.rename(filepath,newname,function(err){
 				if (err){
 					console.log(err);

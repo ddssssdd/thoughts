@@ -13,12 +13,13 @@ var Remove_temp = function(config){
 
   j.cancel();
   */
-  console.log("Begin setup schedule to clear temp folder");
 
   
   //var temppath = __dirname +"\\..\\uploads\\temp\\";
-  var temppath = config.base_folder + config.uploads;
-  //console.log(temppath);
+  var temppath = config.base_folder + config.uploads.temp;
+
+  console.log("Begin setup schedule to clear temp folder: " + temppath);
+
   var rule = new schedule.RecurrenceRule();
   rule.second = 20;
   var delete_files =[];

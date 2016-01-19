@@ -1,5 +1,9 @@
 module.exports = function(app){
+	
+
 	app.get("/index",function(req,res){
+		console.log("Here is /index:")
+		console.log(app.config);
 		var data = {title:"This is a test",is_login:req.session.is_login,user:req.session.user}
 		
 		res.render("index",data);

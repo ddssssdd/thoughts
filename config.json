@@ -9,7 +9,10 @@
     }
   },
   "mongo": "mongodb://127.0.0.1/thoughts",
-  "uploads": "/uploads/temp/",
+  "uploads": { 
+    "temp":"/uploads/temp/",
+    "posts":"/uploads/posts/"
+    },
   "models": ["/models/"],
   "schedules": ["/schedules/"]
 
