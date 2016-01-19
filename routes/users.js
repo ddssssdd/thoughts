@@ -2,12 +2,6 @@ var express = require("express");
 var router = express.Router();
 
 
-
-router.use(function timelog(req,res,next){
-	console.log('Time',Date.now());
-
-	next();
-});
 router.use(function(req,res,next){
 	console.log(req.url);
 	
@@ -32,15 +26,34 @@ router.use(function(req,res,next){
 });
 
 router.get("/",function(req,res){
+	res.redirect("/users/index");
+});
+router.get("/logs",function(req,res){
 	//res.render("users/index",{user:{}});
+	
 	var m = require("mongoose");
 	var UserLog = m.model("user_logs");
-	var userlog = new UserLog({content:"test",user:req.session.user});
-	userlog.save(function(err,result){
-		result.findByUser(req.session.user,function(err,data){
-			res.json(data);
-		})
+	
+	
+	new UserLog().findByUser(req.session.user,function(err,data){console.log(data);
+		//res.json(data);
+		res.render("users/logs",{logs:data});
 	});
+	
+	/*
+	UserLog.log(req.session.user,"Test new",function(err,log){
+		
+		console.log(err);
+		res.json(log);
+	})
+	*/
+	/*
+	var userlog = new UserLog({content:"test2222",user:req.session.user});
+	userlog.save(function(err,result){
+		console.log(result);
+		//res.json(result);
+	});
+	*/
 });
 router.get("/index",function(req,res){
 	res.render("users/index",{user:{}});
