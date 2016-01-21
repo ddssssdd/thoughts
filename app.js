@@ -78,7 +78,6 @@ app.use(function (req, res, next) {
 })
 */
 app.use(function (req,res,next){
-	
 	require("./common/log")(req);
 	next();
 });

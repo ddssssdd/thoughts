@@ -8,7 +8,8 @@
       "maxAge": 2592000000
     }
   },
-  "mongo": "mongodb://127.0.0.1/thoughts",
+  "mongo":"mongodb://admin:admin@ds047085.mongolab.com:47085/thoughts_db",
+  "mongo_local": "mongodb://127.0.0.1/thoughts",
   "uploads": { 
     "temp":"/public/uploads/temp/",
     "posts":"/public/uploads/posts/",
