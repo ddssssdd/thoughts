@@ -17,11 +17,11 @@ User_logSchema.methods.findByUser = function(user_id,callback){
 
 //static 
 User_logSchema.statics.log  = function(user,content,callback){
-	new user_logs({content:content,user:user,created_date:Date.now()}).save(callback);
+	new user_logs({content:content,user:user}).save(callback);
 }
 User_logSchema.pre("save",function(next,done){
-	
-	console.log(done);
+	this.created_date = Date.now();
+	//console.log(done);
 	next();
 });
 user_logs =mongoose.model("user_logs",User_logSchema);

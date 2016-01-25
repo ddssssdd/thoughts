@@ -2,7 +2,16 @@ var nodemailer = require("nodemailer");
 var config = require("../config");
 var transporter = nodemailer.createTransport(config.email.smtp);
 
-
+/*
+example:
+	1. var email = {to:"a060116@163.com",subject:"subject",html:"test",attachments:[]};
+	require("../common/email").send_and_call(req.session.user,email,function(err,info){
+		res.json(info);
+	});
+	2. var att = [{filename:'text1.txt',content:'this is attachment'},{path:"/Users/stevenfu/Pictures/0824ab18972bd407ce1502f479899e510eb309ed.jpg"}];
+	require("../common/email").send(req.session.user,"a060116@163.com","another test newvsssvvs saad","this is body");
+	res.end("Send!");
+*/
 module.exports = {
 	send:function(user,to,subject,body,attachment){
 		var mail= {
@@ -22,15 +31,45 @@ module.exports = {
 			//console.log(info);
 			//res.json(info);
 			if (config.email.log)
-				require("mongoose").model("user_logs").log(user,JSON.stringify(info),null);
+				require("mongoose").model("user_logs").log(user,JSON.stringify(mail),null);
 		});
 	},
 	send_and_call : function(user,email,callback){
-		email.from = config.email.from;
+		email.from = email.from || config.email.from;
 		transporter.sendMail(email,function(err,info){
 			if (callback)
-				callback(err,info)
+				callback(err,info);
+			if (config.email.log && !err && user)
+				require("mongoose").model("user_logs").log(user,JSON.stringify(email),null);
 		});
+	},
+	send_and_sure :function(email,callback){ // try in 3 times, send fail email to admin if  3 tries.
+		
+		var that = this;
+		var execute_count = 0;
+		var execute = function(){
+			console.log("Execute send email at "+(execute_count+1));
+			that.send_and_call(null,email,function(err,info){
+				if (err){
+					console.log(err);
+					if (execute_count>=2){
+						callback("execute 3 time, but all failed.",null);
+						that.send_alert("Send email to "+email.to +" failed in 3 times, content:"+JSON.stringify(email)+", error message: "+ JSON.stringify(err));
+					}else{
+						execute_count ++;
+						setTimeout(execute,3000);
+					}
+				}else{
+					callback(err,info);
+				}
+			});
+		}
+		execute();
+
+	},
+	send_alert : function(message){ // send this message to admin user.
+		var email = {to:config.email.admin_email,subject:"Something happened.",html:message};
+		this.send_and_call(null,email);
 	}
 }
 

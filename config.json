@@ -20,7 +20,8 @@
   "email":{
     "smtp":"smtps://thoughts_china:Xinyu060116@smtp.163.com",
     "from":"thoughts_china@163.com",
-    "log": true
+    "log": true,
+    "admin_email":"a060116@163.com"
   }
 
 }

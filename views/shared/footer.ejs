@@ -10,6 +10,25 @@
 
 </div><!-- /.main-container -->
 <script>
+
+angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService,UserService){
+	$scope.is_login = UserService.is_login();
+	$scope.user = UserService.user();
+	/*
+	UserService(function(user,is_login){
+		$scope.is_login = UserService.is_login;
+		$scope.user = UserService.user;
+		
+	})*/
+	$scope.logout = function(event){
+		event.stopPropagation();
+		window.location = "/users/logout";
+	}
+	$scope.login = function(event){
+		window.location = "/users/login";
+	}
+});	
+/*
 angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService){
 	$scope.user =null;
 	$scope.is_login = false;
@@ -35,7 +54,7 @@ angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpServic
 	$scope.login = function(event){
 		window.location = "/users/login";
 	}
-});	
+});	*/
 </script>
 
 	<!--          This is footor of html body -->

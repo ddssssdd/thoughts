@@ -62,9 +62,9 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 				this.result =(JSON.parse(cache));
 				if (immediate){
 					immediate(this.result);
-				}else if (success){
+				}/*else if (success){
 					success(this.result);
-				}
+				}*/
 				logger.log("Get ["+url+"] from cache");
 			}	
 		}catch(error){
@@ -87,6 +87,34 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 		});
 	}
 	return Post;
+})
+.factory("UserService",function(httpService){
+	console.log("Init UserService in commonService");
+	var user = null;
+	var is_login = false;
+	
+	var process_result = function(json){
+		if (json.status){
+			is_login = true;
+			user = json.result;
+		}else{
+			is_login = false;
+			user = null;
+		}
+		console.log(json);
+	}
+	var url ="/users/info";
+	httpService(url,{},process_result,process_result);
+	
+	return {
+		user:function(){
+			return user;
+		},
+		is_login :function(){
+			return is_login;
+		}
+	}
+	
 });
 
 

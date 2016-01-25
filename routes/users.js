@@ -35,7 +35,7 @@ router.get("/logs",function(req,res){
 	var UserLog = m.model("user_logs");
 	
 	
-	new UserLog().findByUser(req.session.user,function(err,data){console.log(data);
+	new UserLog().findByUser(req.session.user,function(err,data){
 		//res.json(data);
 		res.render("users/logs",{logs:data});
 	});

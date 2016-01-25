@@ -19,8 +19,8 @@ router.use(function(req,res,next){
 	}
 });
 router.get("/send2",function(req,res){
-	var email = {to:"a060116@163.com",subject:"subject",html:"test",attachments:[]};
-	require("../common/email").send_and_call(req.session.user,email,function(err,info){
+	var email = {to:"a060116@163.com",from:"admin@admin.com",subject:"subject and abcdefghss",html:"test",attachments:[]};
+	require("../common/email").send_and_sure(email,function(err,info){
 		res.json(info);
 	});
 })
