@@ -1,0 +1,87 @@
+<% include ../shared/header %>
+
+<div  ng-controller="ProjectCtrl">
+	<form class="form-horizontal" role="form">
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Title </label>
+
+			<div class="col-sm-9">
+				<input type="text" ng-model="project.title"  placeholder="Title" class="col-xs-10 col-sm-5">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Code </label>
+
+			<div class="col-sm-9">
+				<input type="text" ng-model="project.code"  placeholder="Code" class="col-xs-10 col-sm-5">
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Description </label>
+
+			<div class="col-sm-9">
+				<input type="text" ng-model="project.description"  placeholder="Description" class="col-xs-10 col-sm-5">
+			</div>
+
+		</div>
+		
+	</form>
+	<div class="clearfix form-actions">
+		<div class="col-md-offset-3 col-md-9">
+			<button class="btn btn-info" type="button" ng-click="submit($event);">
+				<i class="icon-ok bigger-110"></i>
+				Submit
+			</button>
+
+			&nbsp; &nbsp; &nbsp;
+			<button class="btn" type="reset">
+				<i class="icon-undo bigger-110"></i>
+				Reset
+			</button>
+		</div>
+	</div>
+	
+	
+</div><!-- /.main-content -->
+
+	
+
+
+<% include ../shared/load_public %>
+
+
+<script>
+	
+	angular.module("thoughts_app").controller("ProjectCtrl",function($scope,httpService,hotkeys){
+		$scope.project_id = '<%= id %>';
+		$scope.project = {};
+		hotkeys.bindTo($scope)
+		.add({
+			combo:'ctrl+n',
+			description:'Ctrl + N to create new project',
+			callback:function(){
+				console.log("Paste...");
+			}
+		});
+		$scope.load_data = function(){
+			var url = "/projects/info";
+			httpService(url,{id:$scope.project_id},function(json){
+				$scope.project = json;
+			});
+		}
+		$scope.submit = function(event){
+			event.stopPropagation();
+			console.log($scope.project);
+			var url = "/projects/add";
+			httpService(url,$scope.project,function(json){
+				console.log(json);
+			});
+		}
+		$scope.load_data();
+	});		
+	
+</script>
+
+
+
+<% include ../shared/footer %>

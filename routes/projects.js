@@ -18,6 +18,8 @@ router.use(function(req,res,next){
 		res.redirect("/users/login?url="+req.originalUrl);
 	}
 });
+//for email test only;
+/*
 router.get("/send2",function(req,res){
 	var email = {to:"a060116@163.com",from:"admin@admin.com",subject:"subject and abcdefghss",html:"test",attachments:[]};
 	require("../common/email").send_and_sure(email,function(err,info){
@@ -29,12 +31,50 @@ router.get("/send",function(req,res){
 	require("../common/email").send(req.session.user,"a060116@163.com","another test newvsssvvs saad","this is body");
 	res.end("Send!");
 })
+*/
 router.get("/test",function(req,res){
 	var Project = require("mongoose").model("projects");
 	var project = new Project({user:req.session.user,title:"thoughts",code:"thg",description:"This is thoughts project."});
 	project.save(function(err,result){
 		res.json(result);
 	});
-})
+});
+router.get("/:id",function(req,res){
+	res.render("projects/index",{id:req.params.id || 0 });
+});
+router.get("/edit/:id",function(req,res){
+	res.render("projects/index",{id:req.params.id || 0});
+});
+
+router.post("/add",function(req,res){
+	var Project = require("mongoose").model("projects");
+	var p = {user:req.session.user,
+		title:req.body.title,
+		code:req.body.code,
+		description:req.body.description};
+
+	var project = new Project(p);
+	project.save(function(err,result){
+		res.json(result);
+	});
+});
+router.post("/list",function(req,res){
+	var m = require("mongoose");
+	var Project = m.model("projects");
+	//Project.find({user:new m.Types.ObjectId(req.session.user)},function(err,data){
+	(new Project()).findByUser(req.session.user,function(err,data){
+		res.json(data);
+	});
+});
+router.get("/list",function(req,res){
+	res.render("projects/list");
+});
+router.post("/info",function(req,res){
+	var m = require("mongoose");
+	var Project = m.model("projects");
+	Project.findOne({_id:req.body.id},function(err,data){
+		res.json(data);
+	});
+});
 
 module.exports = router;

@@ -1,0 +1,108 @@
+<% include ../shared/header %>
+
+<div  ng-controller="ProjectCtrl">
+	<div class="table-responsive">
+		<table class="table table-striped table-bordered table-hover">
+			<thead>
+				<tr>
+					<th class="center">
+						<label>
+							<input type="checkbox" class="ace">
+							<span class="lbl"></span>
+						</label>
+					</th>
+					<th>Title</th>
+					<th>Code</th>
+					<th class="hidden-480">Description</th>
+
+					<th>
+						<i class="icon-time bigger-110 hidden-480"></i>
+						Create Date
+					</th>
+					<th class="hidden-480">Creator</th>
+
+					<th></th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr ng-repeat="p in projects">
+					<td class="center">
+						<label>
+							<input type="checkbox" class="ace">
+							<span class="lbl"></span>
+						</label>
+					</td>
+
+					<td>
+						<a href="/projects/edit/{{p._id}}" ng-bind="p.title" ></a>
+					</td>
+					<td ng-bind="p.code"></td>
+					<td class="hidden-480" ng-bind="p.description"></td>
+					<td ng-bind="p.created_date"></td>
+
+					<td class="hidden-480">
+						<span class="label label-sm label-warning" ng-bind="p.user.name"></span>
+					</td>
+
+					<td>
+						<div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
+							<button class="btn btn-xs btn-success">
+								<i class="icon-ok bigger-120"></i>
+							</button>
+
+							<button class="btn btn-xs btn-info">
+								<i class="icon-edit bigger-120"></i>
+							</button>
+
+							<button class="btn btn-xs btn-danger">
+								<i class="icon-trash bigger-120"></i>
+							</button>
+
+							<button class="btn btn-xs btn-warning">
+								<i class="icon-flag bigger-120"></i>
+							</button>
+						</div>
+
+						
+					</td>
+				</tr>
+
+				
+			</tbody>
+		</table>
+	</div>
+</div><!-- /.main-content -->
+
+	
+
+
+<% include ../shared/load_public %>
+
+
+<script>
+	
+	angular.module("thoughts_app").controller("ProjectCtrl",function($scope,httpService,hotkeys){
+		$scope.project = {};
+		hotkeys.bindTo($scope)
+		.add({
+			combo:'ctrl+n',
+			description:'Ctrl + N to create new project',
+			callback:function(){
+				console.log("Paste...");
+			}
+		});
+		$scope.load_data = function(){
+			var url = "/projects/list";
+			httpService(url,{},function(json){
+				$scope.projects = json;
+			});
+		}
+		$scope.load_data();
+	});		
+	
+</script>
+
+
+
+<% include ../shared/footer %>
