@@ -8,7 +8,7 @@ router.use(function(req,res,next){
 	//if (["/login","/logout","/info"].indexOf(req.url.toLowerCase())>-1){
 
 	var skipped = function(url){
-		var should_skipped_array = ["/login","/logout","/info"];
+		var should_skipped_array = ["/login","/add","/index","/logout","/info"];
 		for(var i=0;i<should_skipped_array.length;i++){
 			var s = should_skipped_array[i];
 			if (url.indexOf(s)==0)
