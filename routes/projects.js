@@ -39,11 +39,20 @@ router.get("/test",function(req,res){
 		res.json(result);
 	});
 });
-router.get("/:id",function(req,res){
-	res.render("projects/index",{id:req.params.id || 0 });
+router.get("/index/:id",function(req,res){
+	//res.render("projects/index",{id:req.params.id || 0 });
+	res.redirect("/projects/edit/"+(req.params.id || '0'));
 });
 router.get("/edit/:id",function(req,res){
-	res.render("projects/index",{id:req.params.id || 0});
+	var Project = require("mongoose").model("projects");
+	Project.findOne({_id:req.params.id},function(err,project){
+		if (err){
+			console.log(err);
+		}
+		var data = {project:project || {}};
+		res.render("projects/index",data);	
+	});
+	
 });
 
 router.post("/add",function(req,res){
@@ -52,6 +61,7 @@ router.post("/add",function(req,res){
 		title:req.body.title,
 		code:req.body.code,
 		description:req.body.description};
+
 
 	var project = new Project(p);
 	project.save(function(err,result){
@@ -73,6 +83,8 @@ router.post("/info",function(req,res){
 	var m = require("mongoose");
 	var Project = m.model("projects");
 	Project.findOne({_id:req.body.id},function(err,data){
+		console.log(data.detail);
+		data.detail = "aabb";
 		res.json(data);
 	});
 });
