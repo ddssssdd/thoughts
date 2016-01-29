@@ -46,5 +46,33 @@ module.exports = function(app){
 				response.json(list);
 			}
 		});
+	});
+	app.get("/load2",function(req,response){
+		var request = require("request");
+		var cheerio = require("cheerio");
+		var iconv = require("iconv-lite");
+		//request({url:"http://www.ne.qdedu.net/index.aspx?pkId=7203",encoding:"gb2312"},function(err,res,body){
+		request({encoding:null,url:"http://www.ne.qdedu.net/newsInfo.aspx?pkId=33708"},function(err,res,body){
+			if (!err && res.statusCode == 200){
+				body = iconv.decode(body,'gb2312').toString();
+				var $ = cheerio.load(body);
+				var list = [];
+				debugger;
+				var obj = $("td.newsContent");
+				console.log(obj.text());
+				response.end(obj.text());
+				/*
+				$("td.newsContent").each(function(){
+					console.log(this);
+					if (this.attribs){
+						//this.attribs.title2 = iconv.decode(this.attribs.title,"gb2312");
+						list.push(this.attribs);
+					}
+				});
+				
+				response.json(list);
+				*/
+			}
+		});
 	})
 }
