@@ -25,4 +25,26 @@ module.exports = function(app){
 	app.get("/get",function(req,res){
 		res.json(req.session);
 	});
+	app.get("/load",function(req,response){
+		var request = require("request");
+		var cheerio = require("cheerio");
+		var iconv = require("iconv-lite");
+		//request({url:"http://www.ne.qdedu.net/index.aspx?pkId=7203",encoding:"gb2312"},function(err,res,body){
+		request({encoding:null,url:"http://www.ne.qdedu.net/index.aspx?pkId=7203"},function(err,res,body){
+			if (!err && res.statusCode == 200){
+				body = iconv.decode(body,'gb2312').toString();
+				var $ = cheerio.load(body);
+				var list = [];
+				debugger;
+				$("a.news").each(function(){
+					console.log(this);
+					if (this.attribs){
+						//this.attribs.title2 = iconv.decode(this.attribs.title,"gb2312");
+						list.push(this.attribs);
+					}
+				});
+				response.json(list);
+			}
+		});
+	})
 }
