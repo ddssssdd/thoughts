@@ -16,6 +16,7 @@
     "ejs": "2.3.4",
     "express": "^4.13.3",
     "express-session": "^1.13.0",
+    "iconv-lite": "^0.4.13",
     "mongoose": "^4.3.5",
     "morgan": "^1.6.1",
     "node-schedule": "^0.6.0",
