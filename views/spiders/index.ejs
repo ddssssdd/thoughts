@@ -1,5 +1,5 @@
 <% include head %>
-<div class="container" style="font-size:16px;" ng-app="ReadApp" ng-controller="ReadCtrl">
+<div class="container" style="font-size:16px;" >
 	<div class="row">
 		<div class="col-md-3">
 			<ul class="nav nav-pills nav-stacked" id="chapter" style="border:1px solid;">
@@ -33,10 +33,7 @@
 		}
 
 	});
-	angular.module("ReadApp",["commonService"])
-	.controller("ReadCtrl",function($scope,httpService){
-		$scope.book_id = book_id;
-	});
+	
 
 </script>
 	
