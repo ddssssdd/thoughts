@@ -12,6 +12,7 @@ var load_url = function(url,selector,callback){
 		}
 		if (callback) callback({status:false});
 
+
 	});
 }
 var load_html = function(url,selector,callback){
@@ -19,7 +20,9 @@ var load_html = function(url,selector,callback){
 		if (!err && res.statusCode == 200){
 			body = iconv.decode(body,'gb2312').toString();
 			var $ = cheerio.load(body);
-			var result = $(selector).html();
+			var result = $(selector).text();
+			//result = iconv.decode(result,'gb2312');
+			debugger;
 			console.log(result);
 			if (callback) callback({status:true,result:result});
 			return;

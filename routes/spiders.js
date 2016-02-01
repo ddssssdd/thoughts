@@ -31,6 +31,12 @@ router.get("/read",function(req,res){
 	});
 	
 })
+router.get("/load_html",function(req,res){
+	var spider = require("../common/spider");
+	spider.load_html("http://www.biquge.la/book/2360/1333977.html","#content",function(data){
+		res.json(data);
+	});
+})
 router.get("/load3",function(req,res){
 	var m = require("mongoose");
 	var Book = m.model("books");
@@ -55,6 +61,7 @@ router.get("/load3",function(req,res){
 					var item_url = item.url;
 					var item_title = item.title;
 					update_book(book,index,item_url,item_title);
+					//break;
 					
 				};
 			})
