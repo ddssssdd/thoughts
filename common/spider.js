@@ -21,7 +21,7 @@ var load_html = function(url,selector,callback){
 		if (!err && res.statusCode == 200){
 
 			body = iconv.decode(body,'gb2312').toString();
-			console.log(body);
+			//console.log(body);
 			
 
 			var $ = cheerio.load(body,{decodeEntities:true});

@@ -15,20 +15,73 @@ var update_book = function (book,index,url,title){
 		}
 	});
 }
-router.get("/read",function(req,res){
+router.get("/add",function(req,res){
+	var m = require("mongoose");
+	var Book = m.model("books");
+	Book.find({},function(err,data){
+		res.render("spiders/add",{books:data});		
+	})
+	
+	
+});
+router.post("/add_book",function(req,res){
+	//res.json(req.body);
 	var m = require("mongoose");
 	var Book = m.model("books");
 	var BookItems = m.model("book_items");
-	BookItems.find({},function(err,items){
+	var spider = require("../common/spider");
+	var name =req.body.name;
+	var book_url = req.body.url;
+	spider.load_url(book_url,"dd>a",function(json){
+		var list = [];
+		if (json.status){
+
+			json.result.each(function(){
+				
+				if (this.attribs){
+					list.push({url:book_url+this.attribs.href,title:this.children[0].data});
+				}
+			});
+			Book.inserOrUpdate(name,book_url,"biquge",function(book){
+				for(var i=0;i<list.length;i++){
+					var item = list[i];
+					var index = i;
+					var item_url = item.url;
+					var item_title = item.title;
+					update_book(book,index,item_url,item_title);
+					//break;
+					
+				};
+			})
+		}
+
+		res.json(list);
+	});
+})
+router.get("/read/:id",function(req,res){
+	res.render("spiders/index",{book_id:req.params.id});	
+	
+});
+
+router.get("/load_book/:id",function(req,res){
+	var m = require("mongoose");
+	
+	var BookItems = m.model("book_items");
+	BookItems.find({book_id: new m.Types.ObjectId(req.params.id)},null,{sort:{index:1}},function(err,items){
+		if (err){
+			console.log(err);
+
+		}
+		/*
 		for(var i=0;i<items.length;i++){
 			var item = items[i];
-			item.content = item.content.replace("<script>readx();</script>","");//.replace(/&#x/g,"\\\\");
-
-			console.log(item.title);
-		}
-		//res.charset = "gb2312";
-		res.render("spiders/index",{items:items});	
+			item.content = item.content.replace("<script>readx();</script>","");
+		}*/
+		res.json(items);
 	});
+
+	
+	
 	
 })
 router.get("/load_html",function(req,res){
