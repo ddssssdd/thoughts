@@ -5,6 +5,7 @@ var load_url = function(url,selector,callback){
 	request({encoding:null,url:url},function(err,res,body){
 		if (!err && res.statusCode == 200){
 			body = iconv.decode(body,'gb2312').toString();
+
 			var $ = cheerio.load(body);
 			var result = $(selector);
 			if (callback) callback({status:true,result:result});
@@ -18,13 +19,22 @@ var load_url = function(url,selector,callback){
 var load_html = function(url,selector,callback){
 	request({encoding:null,url:url},function(err,res,body){
 		if (!err && res.statusCode == 200){
+
 			body = iconv.decode(body,'gb2312').toString();
-			var $ = cheerio.load(body);
-			var result = $(selector).text();
-			//result = iconv.decode(result,'gb2312');
+			console.log(body);
+			
+
+			var $ = cheerio.load(body,{decodeEntities:true});
+			//var result = $(selector).text();
+			var result = $(selector).contents();
 			debugger;
-			console.log(result);
-			if (callback) callback({status:true,result:result});
+			var list =[];
+			result.each(function(){
+				if (this.type=='text'){
+					list.push(this.data);
+				}
+			})
+			if (callback) callback({status:true,result:list.join("<br/>")});
 			return;
 		}
 		if (callback) callback({status:false});
