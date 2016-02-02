@@ -76,7 +76,7 @@ historySchema.statics.history = function(user,book,chapter){
 }
 historySchema.statics.chapter = function(user,book,callback){
 	var con = {book:book,user:user};
-	this.findOne(con).populate("chapter").exec(function(err,item){
+	this.findOne(con).populate("chapter").populate("book").exec(function(err,item){
 			if (err){
 				console.log(err);
 			}

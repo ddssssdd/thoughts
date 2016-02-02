@@ -86,6 +86,7 @@ router.post("/load_book/:id",function(req,res){
 			var json = {result:items,status:true};
 			if (item){
 				json.chapter = item.chapter;
+				json.book = item.book;
 			}
 			res.json(json);
 		});

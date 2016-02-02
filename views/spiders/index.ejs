@@ -1,16 +1,22 @@
 <% include head %>
-<div class="container" style="font-size:16px;" ng-app="ReadApp" ng-controller="ReadCtrl">
+<div  ng-app="ReadApp" ng-controller="ReadCtrl">
+
+
+<div class="container" style="font-size:16px;">
 	<div class="row">
-		<div class="col-md-3">
-			<ul class="nav nav-pills nav-stacked" id="chapter" style="border:1px solid;">
+			<h2 class="text-center" ng-bind="book.title"></h2>
+		</div>
+	<div class="row">
+		<div class="col-md-3" style="height:1000px;overflow:scroll;border:1px solid black">
+			<ul class="nav nav-pills nav-stacked" id="chapter" style="margin-top:2px;">
    				<li ng-repeat="chapter in chapters" id="chapter_{{chapter.index}}" ng-click="select_chapter(chapter,$event);">
-   					<a href='#index_{{chapter.index}}'>{{ ($index+1) + '. '+chapter.title }};
+   					<a href='#index_{{chapter.index}}'>{{ ($index+1) + '. '+chapter.title }}</a>
    				</li>
 			</ul>
 		</div>
-		<div class="col-md-9" id="content" style="border:1px solid;">
-			<p class="text-center" id="index_{{current.index}}">
-				<a href="#chapter_{{current.index}}" ng-bind="current.title"></a>
+		<div class="col-md-9" id="content" style="border:1px solid;font-size:18px;line-height:30px;padding-left:20px;">
+			<p style="margin-top:30px;">
+				<h3 ng-bind="current.title" class="text-center" ></h3>
 			</p>
 			<p ng-bind-html="html_content()">
 			</p>
@@ -20,11 +26,13 @@
 	
 
 </div>
+</div>
 <script>
 	var app = angular.module("ReadApp",["commonService","ngSanitize","cfp.hotkeys"]);
 	app.controller("ReadCtrl",function($scope,httpService,$sce,hotkeys){
 		$scope.book_id = "<%= book_id %>";
 		$scope.chapters = [];
+		$scope.book ={};
 		$scope.current = {};
 		$scope.init_data = function(){
 			$scope.load_data();
@@ -32,10 +40,12 @@
 		$scope.load_data = function(){
 			var url = "/spiders/load_book/"+$scope.book_id;
 			httpService(url,{},function(json){
+				console.log(json);
 				if (json.status){
 					$scope.chapters = json.result;
 					var current = json.chapter || json.result[0]
 					$scope.select_chapter(current);	
+					$scope.book  = json.book;
 				}
 				
 			});
