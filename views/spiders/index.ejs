@@ -20,6 +20,12 @@
 			</p>
 			<p ng-bind-html="html_content()">
 			</p>
+			<nav>
+			  <ul class="pager">
+			    <li class="previous" ng-click="goto_chapter(-1)"><a href="#" ><span aria-hidden="true">&larr;</span> Prev</a></li>
+			    <li class="next"  ng-click="goto_chapter(1)"><a href="#">Next <span aria-hidden="true">&rarr;</span></a></li>
+			  </ul>
+			</nav>
 		</div>
 	</div>
 	
