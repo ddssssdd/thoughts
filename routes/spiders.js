@@ -83,9 +83,15 @@ router.post("/load_book/:id",function(req,res){
 	BookItems.find({book_id: new m.Types.ObjectId(req.params.id)},"id title index",{sort:{index:1}},function(err,items){
 		if (err){
 			console.log(err);
-
 		}
-		res.json(items);
+		m.model("book_histories").chapter(req.session.user,new m.Types.ObjectId(req.params.id),function(item){
+			var json = {result:items,status:true};
+			if (item){
+				json.chapter = item.chapter;
+			}
+			res.json(json);
+		});
+		
 	});
 });
 router.post("/load_chapter/:id",function(req,res){
@@ -95,8 +101,8 @@ router.post("/load_chapter/:id",function(req,res){
 	BookItems.findOne({_id: new m.Types.ObjectId(req.params.id)},function(err,item){
 		if (err){
 			console.log(err);
-
 		}
+		m.model("book_histories").history(req.session.user,item.book_id,item);
 		res.json(item);
 	});
 });

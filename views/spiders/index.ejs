@@ -21,8 +21,8 @@
 
 </div>
 <script>
-	var app = angular.module("ReadApp",["commonService","ngSanitize"]);
-	app.controller("ReadCtrl",function($scope,httpService,$sce){
+	var app = angular.module("ReadApp",["commonService","ngSanitize","cfp.hotkeys"]);
+	app.controller("ReadCtrl",function($scope,httpService,$sce,hotkeys){
 		$scope.book_id = "<%= book_id %>";
 		$scope.chapters = [];
 		$scope.current = {};
@@ -32,10 +32,12 @@
 		$scope.load_data = function(){
 			var url = "/spiders/load_book/"+$scope.book_id;
 			httpService(url,{},function(json){
-				$scope.chapters = json;
-				if (json && json.length>0){
-					$scope.select_chapter(json[0]);
+				if (json.status){
+					$scope.chapters = json.result;
+					var current = json.chapter || json.result[0]
+					$scope.select_chapter(current);	
 				}
+				
 			});
 
 		}
@@ -47,9 +49,34 @@
 			var url = "/spiders/load_chapter/"+chapter._id;
 			httpService(url,{},function(json){
 				$scope.current = json;
+				angular.element("#chapter li").removeClass("active");
+				angular.element("#chapter_"+$scope.current.index).addClass("active");
 			});
 		}
+		$scope.goto_chapter = function(v){
+			if (!$scope.current) return;
+			var index = $scope.current.index + v;
+			for(var i=0;i<$scope.chapters.length;i++){
+				if ($scope.chapters[i].index==index){
+					$scope.select_chapter($scope.chapters[i]);
+					return;
+				}
+			}
+		}
 		$scope.init_data();
+		hotkeys.bindTo($scope)
+		.add({
+			combo:"right",
+			callback:function(){
+				$scope.goto_chapter(1);
+			}
+		})
+		.add({
+			combo:"left",
+			callback:function(){
+				$scope.goto_chapter(-1);
+			}
+		});
 	});
 </script>
 	

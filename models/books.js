@@ -55,9 +55,38 @@ detailSchema.statics.insertOrUpdate = function(book,index,url,title,content){
 		}
 	})
 }
+
+var historySchema = new Schema({
+	book:{ ref: "books",type : Schema.ObjectId},
+	user:{ref:"users",type:Schema.ObjectId},
+	last_read: Date,
+	chapter:{ref:"book_items",type:Schema.ObjectId}
+});
+
+historySchema.statics.history = function(user,book,chapter){
+	var con = {book:book,user:user};
+	this.update(con,
+		{book:book,user:user,chapter:chapter,last_read:Date.now()},
+		{upsert:true},
+		function(err,item){
+			if (err){
+				console.log(err);
+			}
+		})
+}
+historySchema.statics.chapter = function(user,book,callback){
+	var con = {book:book,user:user};
+	this.findOne(con).populate("chapter").exec(function(err,item){
+			if (err){
+				console.log(err);
+			}
+			callback(item);
+			
+	});
+}
 books = mongoose.model("books",BookSchema);
 mongoose.model("book_items",detailSchema);
-
+mongoose.model("book_histories",historySchema);
 module.exports = books;
 
-console.log("Register books and book_items success")
+console.log("Register books and book_items, book_historis success")
