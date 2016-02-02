@@ -1,40 +1,56 @@
 <% include head %>
-<div class="container" style="font-size:16px;" >
+<div class="container" style="font-size:16px;" ng-app="ReadApp" ng-controller="ReadCtrl">
 	<div class="row">
 		<div class="col-md-3">
 			<ul class="nav nav-pills nav-stacked" id="chapter" style="border:1px solid;">
-   
+   				<li ng-repeat="chapter in chapters" id="chapter_{{chapter.index}}" ng-click="select_chapter(chapter,$event);">
+   					<a href='#index_{{chapter.index}}'>{{ ($index+1) + '. '+chapter.title }};
+   				</li>
 			</ul>
 		</div>
 		<div class="col-md-9" id="content" style="border:1px solid;">
+			<p class="text-center" id="index_{{current.index}}">
+				<a href="#chapter_{{current.index}}" ng-bind="current.title"></a>
+			</p>
+			<p ng-bind-html="html_content()">
+			</p>
 		</div>
 	</div>
 	
 	
 
 </div>
-
 <script>
-
-	var book_id = "<%= book_id %>";
-	var url = "/spiders/load_book/"+book_id;
-	$.get(url,{},function(json){
-		var items = json;
-		for(var i=0;i<items.length;i++){
-			var item = items[i];
-			var ele = "<p class='text-center' id='index_"+item.index+"'><a href='#chapter_"+i+"'>"+(i+1)+"."+ item.title +"</a></p>";
-			ele += "<p>"+item.content +"</p>";
-			ele +="<br/><br/><p class='text-right'><a href='#chapter'>Top</a></p>";
-			$(ele).appendTo("#content");
-
-			var chapter ="<li id='chapter_"+i+"'><a href='#index_"+item.index+"'>"+(i+1)+". " +item.title +"</li>"
-			$(chapter).appendTo("#chapter");
+	var app = angular.module("ReadApp",["commonService","ngSanitize"]);
+	app.controller("ReadCtrl",function($scope,httpService,$sce){
+		$scope.book_id = "<%= book_id %>";
+		$scope.chapters = [];
+		$scope.current = {};
+		$scope.init_data = function(){
+			$scope.load_data();
+		}
+		$scope.load_data = function(){
+			var url = "/spiders/load_book/"+$scope.book_id;
+			httpService(url,{},function(json){
+				$scope.chapters = json;
+				if (json && json.length>0){
+					$scope.select_chapter(json[0]);
+				}
+			});
 
 		}
-
+		$scope.html_content = function(){
+			return $sce.trustAsHtml($scope.current.content);
+		}
+		$scope.select_chapter = function(chapter,event){
+			if (event) event.stopPropagation();
+			var url = "/spiders/load_chapter/"+chapter._id;
+			httpService(url,{},function(json){
+				$scope.current = json;
+			});
+		}
+		$scope.init_data();
 	});
-	
-
 </script>
 	
 <% include footer %>

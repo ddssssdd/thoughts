@@ -4,6 +4,15 @@ var request = require("request");
 var cheerio = require("cheerio");
 var iconv = require("iconv-lite");
 
+router.use(function(req,res,next){
+	if (req.session.is_login){
+		next();
+	}else{
+		res.redirect("/users/login?url="+req.originalUrl);
+	}
+});
+
+
 var update_book = function (book,index,url,title){
 	var m = require("mongoose");
 	var spider = require("../common/spider");
@@ -37,10 +46,14 @@ router.post("/add_book",function(req,res){
 		if (json.status){
 
 			json.result.each(function(){
-				
-				if (this.attribs){
-					list.push({url:book_url+this.attribs.href,title:this.children[0].data});
+				try{
+					if (this.attribs && this.attribs.href){
+						list.push({url:book_url+this.attribs.href.replace(/\s/g,''),title:this.children[0].data});
+					}	
+				}catch(err){
+					console.log(err);
 				}
+				
 			});
 			Book.inserOrUpdate(name,book_url,"biquge",function(book){
 				for(var i=0;i<list.length;i++){
@@ -63,27 +76,31 @@ router.get("/read/:id",function(req,res){
 	
 });
 
-router.get("/load_book/:id",function(req,res){
+router.post("/load_book/:id",function(req,res){
 	var m = require("mongoose");
 	
 	var BookItems = m.model("book_items");
-	BookItems.find({book_id: new m.Types.ObjectId(req.params.id)},null,{sort:{index:1}},function(err,items){
+	BookItems.find({book_id: new m.Types.ObjectId(req.params.id)},"id title index",{sort:{index:1}},function(err,items){
 		if (err){
 			console.log(err);
 
 		}
-		/*
-		for(var i=0;i<items.length;i++){
-			var item = items[i];
-			item.content = item.content.replace("<script>readx();</script>","");
-		}*/
 		res.json(items);
 	});
+});
+router.post("/load_chapter/:id",function(req,res){
+	var m = require("mongoose");
+	
+	var BookItems = m.model("book_items");
+	BookItems.findOne({_id: new m.Types.ObjectId(req.params.id)},function(err,item){
+		if (err){
+			console.log(err);
 
-	
-	
-	
-})
+		}
+		res.json(item);
+	});
+});
+
 router.get("/load_html",function(req,res){
 	var spider = require("../common/spider");
 	spider.load_html("http://www.biquge.la/book/2360/1333977.html","#content",function(data){
@@ -170,5 +187,6 @@ router.get("/load2",function(req,response){
 			*/
 		}
 	});
-})
+});
+
 module.exports = router;
