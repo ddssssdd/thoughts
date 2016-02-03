@@ -1,20 +1,58 @@
 <% include head %>
 <div  ng-app="ReadApp" ng-controller="ReadCtrl">
-
+<nav class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="/spiders/index">Home</a>
+		</div>
+		<div class="navbar-collapse collapse" role="navigation">
+			<ul class="nav navbar-nav">
+				<li>
+					<a href="/spiders/add">Manage</a>
+				</li>
+				<li>
+					<div class="dropdown" style="padding-top:15px;padding-bottom:15px;">
+					  <a  id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+					    Chapters</a>
+					  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="height:600px;overflow:scroll" id="chapter" >
+					   <li ng-repeat="chapter in chapters" id="chapter_{{chapter.index}}" ng-click="select_chapter(chapter,$event);">
+   							<a href='#index_{{chapter.index}}'>{{ ($index+1) + '. '+chapter.title }}</a>
+   						</li>
+					  </ul>
+					</div>
+				</li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<a href="/spiders/settings">Settings</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
 
 <div class="container" style="font-size:16px;">
 	<div class="row">
 			<h2 class="text-center" ng-bind="book.title"></h2>
 		</div>
 	<div class="row">
-		<div class="col-md-3" style="height:1000px;overflow:scroll;border:1px solid black">
-			<ul class="nav nav-pills nav-stacked" id="chapter" style="margin-top:2px;">
-   				<li ng-repeat="chapter in chapters" id="chapter_{{chapter.index}}" ng-click="select_chapter(chapter,$event);">
-   					<a href='#index_{{chapter.index}}'>{{ ($index+1) + '. '+chapter.title }}</a>
-   				</li>
-			</ul>
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 ng-bind="current.title" class="text-center" ></h3>
+			</div>
+			<div class="panel-body" style="font-size:18px;line-height:30px;">
+				<p ng-bind-html="html_content()">
+			</div>
+			<div class="panel-footer">
+				<nav>
+				  <ul class="pager">
+				    <li class="previous" ng-click="goto_chapter(-1)"><a href="#" ><span aria-hidden="true">&larr;</span> Prev</a></li>
+				    <li class="next"  ng-click="goto_chapter(1)"><a href="#">Next <span aria-hidden="true">&rarr;</span></a></li>
+				  </ul>
+				</nav>
+			</div>
 		</div>
-		<div class="col-md-9" id="content" style="border:1px solid;font-size:18px;line-height:30px;padding-left:20px;">
+		<!-- div class="col-md-12" id="content" style="border:1px solid;font-size:18px;line-height:30px;padding-left:20px;">
 			<p style="margin-top:30px;">
 				<h3 ng-bind="current.title" class="text-center" ></h3>
 			</p>
@@ -26,11 +64,19 @@
 			    <li class="next"  ng-click="goto_chapter(1)"><a href="#">Next <span aria-hidden="true">&rarr;</span></a></li>
 			  </ul>
 			</nav>
-		</div>
+		</div -->
 	</div>
-	
-	
+	<div class="row">
+		<div class="progress">
+	  	<div class="progress-bar" role="progressbar" aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width: {{progress}}%;">
+	    {{progress}}%
+	  	</div>
 
+		</div>
+	</div>	
+	<div class="row">
+		
+	</div>
 </div>
 </div>
 <script>
@@ -40,6 +86,7 @@
 		$scope.chapters = [];
 		$scope.book ={};
 		$scope.current = {};
+		$scope.progress = 0;
 		$scope.init_data = function(){
 			$scope.load_data();
 		}
@@ -67,6 +114,8 @@
 				$scope.current = json;
 				angular.element("#chapter li").removeClass("active");
 				angular.element("#chapter_"+$scope.current.index).addClass("active");
+				angular.element("#chapter").closest("div.dropdown").removeClass("open");
+				$scope.progress = Math.ceil(100* (json.index / $scope.chapters.length) *100)/100; 
 			});
 		}
 		$scope.goto_chapter = function(v){
