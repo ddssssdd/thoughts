@@ -31,7 +31,7 @@
 	</div>
 </nav>
 
-<div class="container" style="font-size:16px;">
+<div class="container" style="font-size:16px;" id="top_container">
 	<div class="row">
 			<h2 class="text-center" ng-bind="book.title"></h2>
 		</div>
@@ -116,6 +116,7 @@
 				angular.element("#chapter_"+$scope.current.index).addClass("active");
 				angular.element("#chapter").closest("div.dropdown").removeClass("open");
 				$scope.progress = Math.ceil(100* (json.index / $scope.chapters.length) *100)/100; 
+				location.href = "#top_container";
 			});
 		}
 		$scope.goto_chapter = function(v){
