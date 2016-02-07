@@ -44,28 +44,55 @@ router.get("/index/:id",function(req,res){
 	res.redirect("/projects/edit/"+(req.params.id || '0'));
 });
 router.get("/edit/:id",function(req,res){
-	var Project = require("mongoose").model("projects");
-	Project.findOne({_id:req.params.id},function(err,project){
+	if (req.params.id==0){
+		res.render("projects/index",{project:{id:0}});
+		return;
+	}
+	var m = require("mongoose");
+	var Project = m.model("projects");
+	Project.findOne({_id: new m.Types.ObjectId(req.params.id)},function(err,project){
 		if (err){
 			console.log(err);
 		}
-		var data = {project:project || {}};
+		var data = {project:project || {id:0}};
 		res.render("projects/index",data);	
 	});
 	
 });
 
 router.post("/add",function(req,res){
-	var Project = require("mongoose").model("projects");
+	var m = require("mongoose");
+	var Project = m.model("projects");
 	var p = {user:req.session.user,
 		title:req.body.title,
 		code:req.body.code,
 		description:req.body.description};
 
-
-	var project = new Project(p);
-	project.save(function(err,result){
-		res.json(result);
+	var id = req.body.id;
+	if (id==0){
+		var project = new Project(p);
+		project.save(function(err,result){
+			if (!err){
+				res.redirect("/projects/list");
+			}
+		});	
+	}else{
+		Project.update({_id:new m.Types.ObjectId(id)},p,function(err,result){
+			if (!err){
+				console.log(result);
+				res.redirect("/projects/list");
+			}
+		})
+	}
+	
+});
+router.post("/remove",function(req,res){
+	var id = req.body.id;
+	var m = require("mongoose");
+	m.model("projects").remove({_id:new m.Types.ObjectId(id)},function(err,raw){
+		if (!err){
+			res.json(raw);
+		}
 	});
 });
 router.post("/list",function(req,res){
@@ -82,9 +109,8 @@ router.get("/list",function(req,res){
 router.post("/info",function(req,res){
 	var m = require("mongoose");
 	var Project = m.model("projects");
-	Project.findOne({_id:req.body.id},function(err,data){
-		console.log(data.detail);
-		data.detail = "aabb";
+	Project.findOne({_id:new m.Types.ObjectId(req.body.id)},function(err,data){
+		
 		res.json(data);
 	});
 });

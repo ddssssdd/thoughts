@@ -51,15 +51,15 @@
 								<i class="icon-ok bigger-120"></i>
 							</button>
 
-							<button class="btn btn-xs btn-info">
+							<button class="btn btn-xs btn-info" ng-click="edit_project(p,$event)">
 								<i class="icon-edit bigger-120"></i>
 							</button>
 
-							<button class="btn btn-xs btn-danger">
+							<button class="btn btn-xs btn-danger" ng-click="remove_project(p,$event)">
 								<i class="icon-trash bigger-120"></i>
 							</button>
 
-							<button class="btn btn-xs btn-warning">
+							<button class="btn btn-xs btn-warning" ng-click="setup_project(p,$event)">
 								<i class="icon-flag bigger-120"></i>
 							</button>
 						</div>
@@ -99,6 +99,25 @@
 			});
 		}
 		$scope.load_data();
+
+		$scope.edit_project = function(p,event){
+			event.stopPropagation();
+			window.location.href = "/projects/edit/"+p._id;
+		}
+		$scope.remove_project = function(p,event){
+			event.stopPropagation();
+			var url  = "/projects/remove";
+			httpService(url,{id:p._id},function(json){
+				console.log(json);
+				var index = angular.element(event.target).closest("tr").index();
+				$scope.projects.splice(index,1);
+			});
+		}
+		$scope.setup_project = function(p,event){
+			event.stopPropagation();
+			window.href = "/projects/edit/"+p._id;
+		}
+		
 	});		
 	
 </script>

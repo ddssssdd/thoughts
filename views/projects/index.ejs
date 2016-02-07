@@ -1,34 +1,34 @@
 <% include ../shared/header %>
 
 <div  ng-controller="ProjectCtrl">
-	<form class="form-horizontal" role="form">
+	<form class="form-horizontal" role="form" id="project_form" method="POST" action="/projects/add">
 		<div class="form-group">
 			<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Title </label>
 
 			<div class="col-sm-9">
-				<input type="text" ng-model="project.title"  placeholder="Title" class="col-xs-10 col-sm-5" value="<%= project.title %>">
+				<input type="text" name="title" placeholder="Title" class="col-xs-10 col-sm-5" value="<%= project.title %>">
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Code </label>
 
 			<div class="col-sm-9">
-				<input type="text" ng-model="project.code"  placeholder="Code" class="col-xs-10 col-sm-5"  value="<%= project.code %>">
+				<input type="text" name="code"  placeholder="Code" class="col-xs-10 col-sm-5"  value="<%= project.code %>">
 			</div>
 		</div>
 		<div class="form-group">
 			<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Description </label>
 
 			<div class="col-sm-9">
-				<input type="text" ng-model="project.description"  placeholder="Description" class="col-xs-10 col-sm-5"  value="<%= project.description %>">
+				<input type="text" name="description"  placeholder="Description" class="col-xs-10 col-sm-5"  value="<%= project.description %>">
 			</div>
 
 		</div>
-		<input type="hidden"  value="<%= project._id %>"  ng-model="project.id"/>
+		<input type="hidden"  value="<%= project._id %>"  name="id"/>
 	</form>
 	<div class="clearfix form-actions">
 		<div class="col-md-offset-3 col-md-9">
-			<button class="btn btn-info" type="button" ng-click="submit($event);">
+			<button class="btn btn-info" type="button" onclick="project_form.submit();">
 				<i class="icon-ok bigger-110"></i>
 				Submit
 			</button>
