@@ -7,17 +7,7 @@ var multipartMiddleware = multipart({uploadDir:temp_path});
 
 
 
-router.use(function timelog(req,res,next){
-	console.log('Time',Date.now());
-	next();
-});
-router.use(function(req,res,next){
-	if (req.session.is_login){
-		next();
-	}else{
-		res.redirect("/users/login?url="+req.originalUrl);
-	}
-});
+
 //for email test only;
 /*
 router.get("/send2",function(req,res){
@@ -34,7 +24,7 @@ router.get("/send",function(req,res){
 */
 router.get("/test",function(req,res){
 	var Project = require("mongoose").model("projects");
-	var project = new Project({user:req.session.user,title:"thoughts",code:"thg",description:"This is thoughts project."});
+	var project = new Project({user:req.session.user.id,title:"thoughts",code:"thg",description:"This is thoughts project."});
 	project.save(function(err,result){
 		res.json(result);
 	});
@@ -50,7 +40,7 @@ router.get("/edit/:id",function(req,res){
 	}
 	var m = require("mongoose");
 	var Project = m.model("projects");
-	Project.findOne({_id: new m.Types.ObjectId(req.params.id)},function(err,project){
+	Project.findOne({_id: new m.Types.ObjectId(req.params.id)}).populate("user").exec(function(err,project){
 		if (err){
 			console.log(err);
 		}
@@ -63,7 +53,7 @@ router.get("/edit/:id",function(req,res){
 router.post("/add",function(req,res){
 	var m = require("mongoose");
 	var Project = m.model("projects");
-	var p = {user:req.session.user,
+	var p = {user:req.session.user.id,
 		title:req.body.title,
 		code:req.body.code,
 		description:req.body.description};
@@ -99,7 +89,7 @@ router.post("/list",function(req,res){
 	var m = require("mongoose");
 	var Project = m.model("projects");
 	//Project.find({user:new m.Types.ObjectId(req.session.user)},function(err,data){
-	(new Project()).findByUser(req.session.user,function(err,data){
+	(new Project()).findByUser(req.session.user.id,function(err,data){
 		res.json(data);
 	});
 });

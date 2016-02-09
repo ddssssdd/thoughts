@@ -1,6 +1,7 @@
 <% include ../shared/header %>
 
 <div  ng-controller="ProjectCtrl">
+	<h1><%= user.name %></h1>
 	<form class="form-horizontal" role="form" id="project_form" method="POST" action="/projects/add">
 		<div class="form-group">
 			<label class="col-sm-3 control-label no-padding-right" for="form-field-1"> Title </label>
@@ -54,23 +55,35 @@
 	
 	angular.module("thoughts_app").controller("ProjectCtrl",function($scope,httpService,hotkeys){
 		
-		$scope.project = {};
+		$scope.project ={};
 		hotkeys.bindTo($scope)
 		.add({
 			combo:'ctrl+n',
 			description:'Ctrl + N to create new project',
 			callback:function(){
-				console.log("Paste...");
+				$scope.reset_data();
 			}
-		});
+		}).
+		add({
+			combo:'ctrl+s',
+			description:"Ctrl + S to save the project",
+			callback:function(){
+				$scope.submit();
+			}
+		})
 		$scope.load_data = function(){
 			var url = "/projects/info";
 			httpService(url,{id:$scope.project_id},function(json){
 				$scope.project = json;
 			});
 		}
+		$scope.reset_data = function(){
+			angular.element("form input").val('');
+		}
 		$scope.submit = function(event){
-			event.stopPropagation();
+			angular.element("#project_form").submit();
+			return;
+			if (event) event.stopPropagation();
 			console.log($scope.project);
 			var url = "/projects/add";
 			httpService(url,$scope.project,function(json){

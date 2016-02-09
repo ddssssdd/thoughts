@@ -16,11 +16,17 @@ router.use(function(req,res,next){
 		}
 		return false;
 	}		
-	if (skipped(req.url.toLowerCase())){		
+	if (skipped(req.url.toLowerCase())){	
+		res.locals.user = {id:0,name:"Unknown"};
+		res.locals.is_login = false;	
 		next();
 	}else if (req.session.is_login){
+		res.locals.user = req.session.user;
+		res.locals.is_login = true;
 		next();
 	}else{
+		res.locals.user = {id:0,name:"Unknown"};
+		res.locals.is_login = false;
 		res.redirect("/users/login?url="+req.originalUrl);
 	}
 });
@@ -35,7 +41,7 @@ router.get("/logs",function(req,res){
 	var UserLog = m.model("user_logs");
 	
 	
-	new UserLog().findByUser(req.session.user,function(err,data){
+	new UserLog().findByUser(req.session.user.id,function(err,data){
 		//res.json(data);
 		res.render("users/logs",{logs:data});
 	});
@@ -121,10 +127,10 @@ router.post("/login",function(req,res){
 	}
 	var user_model = require("mongoose").model("users");
 	user_model.findOne({name:req.body.username},function(err,user){
-		console.log(user);
+		
 		if (user){
 			req.session.is_login = true;
-			req.session.user = user.id;	
+			req.session.user = {id:user.id,name:user.name,email:user.email};	
 		}
 		var url = req.body.return_url;
 		res.redirect(url);

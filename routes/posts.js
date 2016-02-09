@@ -7,17 +7,7 @@ var multipartMiddleware = multipart({uploadDir:temp_path});
 
 
 
-router.use(function timelog(req,res,next){
-	console.log('Time',Date.now());
-	next();
-});
-router.use(function(req,res,next){
-	if (req.session.is_login){
-		next();
-	}else{
-		res.redirect("/users/login?url="+req.originalUrl);
-	}
-});
+
 
 router.get("/",function(req,res){
 	res.redirect("index");
@@ -62,7 +52,7 @@ router.post("/upload_image",multipartMiddleware,function(req,res){
 				link:config.uploads.link_base+originalFilename,
 				size:data.size,
 				type:"image/jpeg",
-				user:req.user,
+				user:req.session.user.id,
 				uploaded_date:Date.now()
 			});
 			upload.save(function(err,data){
@@ -123,7 +113,7 @@ router.post("/add", multipartMiddleware,function(req,res){
 						link:config.uploads.link_base+oldname,
 						size:size,
 						type:type,
-						user:req.user,
+						user:req.session.user.id,
 						uploaded_date:Date.now()
 					});
 					upload.save(function(err,data){
@@ -153,7 +143,7 @@ router.post("/add", multipartMiddleware,function(req,res){
 	
 	var update = {content:req.body.content,
 			created_date:Date.now(),
-			user:req.session.user}
+			user:req.session.user.id}
 	if (req.body.id){
 
 		post_model.findOneAndUpdate({_id:req.body.id},update,function(err,post){

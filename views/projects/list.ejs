@@ -89,7 +89,7 @@
 			combo:'ctrl+n',
 			description:'Ctrl + N to create new project',
 			callback:function(){
-				console.log("Paste...");
+				$scope.add_new();
 			}
 		});
 		$scope.load_data = function(){
@@ -99,7 +99,9 @@
 			});
 		}
 		$scope.load_data();
-
+		$scope.add_new = function(){
+			window.location.href = "/projects/edit/0";
+		}
 		$scope.edit_project = function(p,event){
 			event.stopPropagation();
 			window.location.href = "/projects/edit/"+p._id;

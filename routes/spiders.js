@@ -1,13 +1,7 @@
 var express = require("express");
 var router = express.Router();
 
-router.use(function(req,res,next){
-	if (req.session.is_login){
-		next();
-	}else{
-		res.redirect("/users/login?url="+req.originalUrl);
-	}
-});
+
 
 
 var update_book = function (book,index,url,title){
@@ -82,7 +76,7 @@ router.post("/load_book/:id",function(req,res){
 		if (err){
 			console.log(err);
 		}
-		m.model("book_histories").chapter(req.session.user,new m.Types.ObjectId(req.params.id),function(item){
+		m.model("book_histories").chapter(req.session.user.id,new m.Types.ObjectId(req.params.id),function(item){
 			var json = {result:items,status:true};
 			if (item){
 				json.chapter = item.chapter;
@@ -101,7 +95,7 @@ router.post("/load_chapter/:id",function(req,res){
 		if (err){
 			console.log(err);
 		}
-		m.model("book_histories").history(req.session.user,item.book_id,item);
+		m.model("book_histories").history(req.session.user.id,item.book_id,item);
 		res.json(item);
 	});
 });

@@ -81,11 +81,13 @@ app.use(function (req,res,next){
 	require("./common/log")(req);
 	next();
 });
+app.use("/users",require("./routes/users"));
 
+app.use(require("./middleware/security"));
 var route = require('./routes/index');
 route(app);
 
-app.use("/users",require("./routes/users"));
+
 app.use("/posts",require("./routes/posts"));
 app.use("/projects",require("./routes/projects"));
 app.use("/spiders",require("./routes/spiders"));

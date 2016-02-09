@@ -115,6 +115,13 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 		}
 	}
 	
-});
+})
+.factory("Message",function(){
+	return {
+		show:function(message){
+			alert(message);
+		}
+	}
+})
 
 
