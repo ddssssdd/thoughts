@@ -24,8 +24,9 @@
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li>
-					<a href="/spiders/settings">Settings</a>
+					<input type="text" class="form-control" style="margin-top:9px;">
 				</li>
+				
 			</ul>
 		</div>
 	</div>
@@ -81,7 +82,7 @@
 </div>
 <script>
 	var app = angular.module("ReadApp",["commonService","ngSanitize","cfp.hotkeys"]);
-	app.controller("ReadCtrl",function($scope,httpService,$sce,hotkeys){
+	app.controller("ReadCtrl",function($scope,httpService,$sce,hotkeys,Message){
 		$scope.book_id = "<%= book_id %>";
 		$scope.chapters = [];
 		$scope.book ={};
@@ -142,7 +143,13 @@
 			callback:function(){
 				$scope.goto_chapter(-1);
 			}
-		});
+		})
+		.add({
+			combo:"ctrl+alt+n",
+			callback:function(){
+				Message.confirm("Are you sure?",null,null,function(){console.log("Cancel");},function(){console.log("OK");})
+			}
+		})
 	});
 </script>
 	

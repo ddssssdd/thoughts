@@ -44,6 +44,41 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 	    return angular.isObject(data) && String(data) !== '[object File]' ? param(data) : data;
 	  }];
 	})
+.factory("Message",function(){
+	return {
+		show:function(message){
+			layer.alert(message);
+		},
+		loading:function(){
+			return layer.load();
+		},
+		close:function(handler){
+			layer.close(handler);
+		},
+		closeAll:function(){
+			layer.closeAll();
+		},
+		confirm:function(message,btn1,btn2,callback1,callback2){
+			btn1 = btn1 || "Cacel";
+			btn2 = btn2 || "OK";
+			var index = layer.confirm(message,{btn:[btn1,btn2]},function(){
+				layer.close(index);
+				if (callback1) callback1();
+			},function(){
+				layer.close(index);
+				if (callback2) callback2();
+			});
+		},
+		msg:function(message){
+			layer.msg(message);
+		},
+		input:function(message,callback){
+			layer.prompt({title:message,formType:1},function(result){
+				if (callback) callback(result);
+			})
+		}
+	}
+})
 .factory("logger",function(){ // log wrapper
 	return {
 		log:function(msg){
@@ -51,7 +86,7 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 		}
 	}
 })
-.factory("httpService",function($http,logger,md5){//use this will cache the result and return cache result first.
+.factory("httpService",function($http,logger,md5,Message){//use this will cache the result and return cache result first.
 	var Post = function(url,parameter,success,immediate,showStatus){
 		this.url = url;
 		this.parameter = parameter;
@@ -70,12 +105,16 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 		}catch(error){
 			logger.log("Failed to get value from localstorage. Error: "+error);
 		}
-		
+		var handler = Message.loading();
 		$http.post(url,parameter).success(function(json){
-			
+			Message.close(handler);
 			try{
 				localStorage.setItem(cacheKey,(JSON.stringify(json)));	
 				logger.log("Write ["+url+"] result to cache");
+				logger.log("Parameters:");
+				logger.log(parameter);
+				logger.log("Return:");
+				logger.log(json);
 			}catch(error){
 				localStorage.clear();
 				logger.log("Failed to write value to localstorage. Error: "+error);
@@ -116,12 +155,6 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 	}
 	
 })
-.factory("Message",function(){
-	return {
-		show:function(message){
-			alert(message);
-		}
-	}
-})
+
 
 
