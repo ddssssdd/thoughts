@@ -1,5 +1,6 @@
 module.exports = function(req,res,next){
 	
+	res.locals.base_url = req.protocol +"://"+req.headers.host;
 	if (req.session && req.session.is_login){
 		res.locals.user = req.session.user;
 		res.locals.is_login = true;
