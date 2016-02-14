@@ -128,9 +128,9 @@ router.post("/login",function(req,res){
 	var user_model = require("mongoose").model("users");
 	user_model.findOne({name:req.body.username},function(err,user){
 		
-		if (user){
+		if (user){			
 			req.session.is_login = true;
-			req.session.user = {id:user.id,name:user.name,email:user.email};	
+			req.session.user = {id:user.id,name:user.name,email:user.email};				
 		}
 		var url = req.body.return_url;
 		res.redirect(url);

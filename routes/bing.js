@@ -1,18 +1,38 @@
 var express = require("express");
 var router = express.Router();
 var Bing = require("node-bing-api")({accKey:"f5Jjmx7eh64/ad68KAWg0V0aelGm/8dKYPNoABzHy3M"});
-router.get("/search/:key",function(req,res){
+
+router.get("/",function(req,res){
+  res.redirect("/bing/index");
+});
+
+router.get("/index",function(req,res){
+  res.render("bing/index");
+});
+router.post("/search/:key",function(req,res){
 	var page = req.query.page | 1;
 	Bing.web(req.params.key,{top:50,skip:(page-1)*50},function(error,res_bing,body){
 		if (!error){
-			console.log(body);
+			//console.log(body);      
 			res.json(body.d.results);
-			return;
-		}
-		res.redirect("/bing/index");
+      var m = require("mongoose");
+      var h = m.model("user_search_history");      
+      h.log(req.session.user.id,req.params.key);
+			
+		}else{
+      res.json([]);
+    }
+		
 	});
 });
-router.get("/image/:key",function(req,res){
+router.post("/history",function(req,res){
+  var m = require("mongoose");
+  var h = m.model("user_search_history");
+  h.histories(req.session.user.id,function(json){
+    res.json(json);
+  })
+});
+router.post("/image/:key",function(req,res){
 	var page = req.query.page | 1;
 	Bing.images(req.params.key, {
 		top:50,

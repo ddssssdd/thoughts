@@ -145,9 +145,18 @@
 			}
 		})
 		.add({
-			combo:"ctrl+alt+n",
+			combo:"f",
 			callback:function(){
-				Message.confirm("Are you sure?",null,null,function(){console.log("Cancel");},function(){console.log("OK");})
+				//Message.confirm("Are you sure?",null,null,function(){console.log("Cancel");},function(){console.log("OK");})
+				var index = layer.open({
+				    type: 2,
+				    title:"Search",
+				    content: 'http://localhost:7000/bing/index',
+				    area: ['300px', '195px'],
+				    maxmin: true
+				});
+				layer.full(index);
+
 			}
 		})
 	});

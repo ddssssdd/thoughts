@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css" />
+	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+	<script type="text/javascript" src="/assets/js/angular.min.js"></script>
+	<script type="text/javascript" src="/assets/js/angular-md5.min.js"></script>
+	<script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+	<script type="text/javascript" src="/js/common.js"></script>
+	<script type="text/javascript" src="/js/layer/layer.js"></script>
+	<script type="text/javascript" src="/assets/js/hotkeys.min.js"></script>
+	
+</head>
+<body >
+	<div class="container" ng-app="SearchApp" ng-controller="SearchCtrl">
+		<div class="row">
+			<div class="panel panel-info">
+				<div class="panel-heading text-center">
+					<input type="text" name="search_key" style="width:600px;" ng-model="search_key" ng-keydown="keydown_search($event);"/>
+					<button class="btn btn-info btn-xs" ng-click="search_bing($event);">Search</button>
+				</div>
+				<div class="row">
+					<div class="col-md-9">
+						<ul class="list-group">
+					    <li class="list-group-item" ng-repeat="item in results">
+					    	<a ng-href="{{item.Url}}" target="_blank"><h5 ng-bind="item.Title"></h3></a>
+					    	<p ng-bind="item.Description"></p>
+
+					    </li>
+					    
+				  	</ul>
+					</div>
+					<div class="col-md-3">
+						<div class="panel panel-success">
+							<div class="panel-heading">
+							</div>
+						<ul class="list-group">
+					    	<li class="list-group-item" ng-repeat="item in histroies" >					    	
+					    		<a href="#" ng-click="do_search_again(item,$event);"><p ng-bind="item.key"></p></a>
+					    	</li>
+						</ul>
+					</div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module("SearchApp",["commonService","ngSanitize","cfp.hotkeys"]);
+	app.controller("SearchCtrl",function($scope,httpService,$sce,hotkeys,Message){
+		$scope.search_key = '';
+		$scope.results =[];
+		hotkeys.add({
+		    combo: 'enter',
+		    description: 'Search',
+		    callback: function() {
+		      $scope.search_bing(null);
+		    }
+		 });
+		$scope.keydown_search = function(event){
+			event.stopPropagation();
+			if (event.keyCode==13){
+				$scope.search_bing(event);		
+			}
+		}
+		$scope.search_bing = function(event){
+			if (event) event.stopPropagation();
+			if (!$scope.search_key || $scope.search_key.length==0){
+				return;
+			}
+			var url = "/bing/search/"+$scope.search_key;
+			httpService(url,{},function(json){
+				console.log(json);
+				$scope.results = json;
+				$scope.load_his();
+			});
+			
+		}
+		$scope.do_search_again = function(item,event){
+			$scope.search_key = item.key;
+			$scope.search_bing(event);
+		}
+		$scope.load_his = function(){
+			var url = "/bing/history";
+			httpService(url,{},function(json){
+				$scope.histroies = json;
+			});
+		}
+		$scope.load_his();
+	});
+	</script>
+	
+</body>
+</html>
