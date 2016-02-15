@@ -16,6 +16,7 @@ router.use(function(req,res,next){
 		}
 		return false;
 	}		
+	res.locals.base_url =  req.protocol +"://"+req.headers.host;
 	if (skipped(req.url.toLowerCase())){	
 		res.locals.user = {id:0,name:"Unknown"};
 		res.locals.is_login = false;	
@@ -121,6 +122,7 @@ router.get("/login",function(req,res){
 });
 router.post("/login",function(req,res){
 	//res.json(req.body);
+	//return;
 	if (!req.body.username || !req.body.password){
 		res.redirect("/users/login");
 		return;
@@ -132,7 +134,7 @@ router.post("/login",function(req,res){
 			req.session.is_login = true;
 			req.session.user = {id:user.id,name:user.name,email:user.email};				
 		}
-		var url = req.body.return_url;
+		var url = req.body.return_url || "/index";
 		res.redirect(url);
 	});
 });

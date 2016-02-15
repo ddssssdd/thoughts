@@ -1,9 +1,3 @@
-<!-- PAGE CONTENT ENDS -->
-			</div>
-		</div>
-	</div>
-
-	
 	
 </div><!-- /.main-content -->
 </div><!-- /.main-container-inner -->
@@ -11,7 +5,7 @@
 </div><!-- /.main-container -->
 <script>
 
-angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService){
+angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService,hotkeys){
 	//$scope.is_login = UserService.is_login();
 	//$scope.user = UserService.user();
 	/*
@@ -29,6 +23,33 @@ angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpServic
 	$scope.login = function(event){
 		window.location = "/users/login";
 	}
+	$scope.init_data = function(){
+		if ($scope.is_login){
+			var url = "/projects/list";
+			httpService(url,{},function(json){
+				$scope.projects = json;
+			});
+		}
+		angular.element("#top_right_area").show();
+	}
+	$scope.init_data();
+	hotkeys.bindTo($scope)		
+	.add({
+		combo:"f",
+		callback:function(){
+			//Message.confirm("Are you sure?",null,null,function(){console.log("Cancel");},function(){console.log("OK");})
+			var index = layer.open({
+			    type: 2,
+			    title:"Search",
+			    content: '<%= base_url %>/bing/index',
+			    area: ['300px', '195px'],
+			    maxmin: true
+			});
+			layer.full(index);
+
+		}
+	})
+
 });	
 /*
 angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService){

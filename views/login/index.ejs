@@ -1,25 +1,61 @@
-<% include ../shared/header %>
+<% include ../shared/header_without_login %>
 
-		<div class="main-container" >
-			<div class="main-container-inner">
-				<div class="siderbar">
-				</div>
-				<div class="main-content">
-					<form action="/users/login" method="POST">
-							<input type="text" name="username" placeholder="Username"/>
-							<input type="password" name="password" placeholder="Password" />
-							<input type="hidden" name="return_url" value="<%= return_url %>" />
-							<input type="submit" value="Login"/>
-					</form>
-					
-				</div><!-- /.main-content -->
+<div class="panel panel-default ">
+	<div class="panel-heading">
+		<h5></h5>
+	</div>
+	<div class="panel-body">
+	<form class="form-horizontal" action="/users/login" method="POST">
+	  <div class="form-group">
+	    <label class="col-sm-3 control-label no-padding-right" for="exampleInputEmail3">User name</label>
+	    <div class="col-sm-9">
+	    	<input type="text" class="col-xs-10 col-sm-5" id="exampleInputEmail3" name="username" placeholder="Username">
+		</div>
+	  </div>
+	  <div class="space-4"></div>
+	  <div class="form-group">
+	    <label class="col-sm-3 control-label no-padding-right" for="exampleInputPassword3">Password</label>
+	    <div class="col-sm-9">
+	    	<input type="password" class="col-xs-10 col-sm-5" id="exampleInputPassword3" name="password" placeholder="Password" >
+	    	
+		</div>
+	  </div>
+	  <div class="space-4"></div>
+	  <div class="form-group">
+	    <label class="col-sm-3 control-label no-padding-right" >
+	      
+	    </label>
+	    <div class="col-sm-9 text-left">
+	    	<input type="checkbox" > Remember me  
+	    </div>
+	    
+	  </div>
+	  <div class="form-group">
+	    <label class="col-sm-3 control-label no-padding-right" >
+	      
+	    </label>
+	    <div class="col-sm-9 text-left">
+	    	<button type="submit" class="btn btn-default">Login</button>
+	    	&nbsp &nbsp<a href="/users/index">Register</a>
+	    </div>
+	    
+	  </div>
+	  
+	  <input type="hidden" name="return_url" value="<%= return_url %>" />
+	</form>
+
+
+	</div>
+	<div class="panel-footer">
+		<h5></h5>
+	</div>
+</div>
 
 				
-			</div><!-- /.main-container-inner -->
+	
+					
 
-			
-		</div><!-- /.main-container -->
 
 <% include ../shared/load_public %>
 
-<% include ../shared/footer %>
+<% include ../shared/footer_without_login %>

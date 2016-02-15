@@ -90,7 +90,13 @@ router.post("/list",function(req,res){
 	var Project = m.model("projects");
 	//Project.find({user:new m.Types.ObjectId(req.session.user)},function(err,data){
 	(new Project()).findByUser(req.session.user.id,function(err,data){
-		res.json(data);
+		if (!err){
+			res.json(data);	
+		}else{
+			console.log(err);
+			res.json([]);	
+		}
+		
 	});
 });
 router.get("/list",function(req,res){
