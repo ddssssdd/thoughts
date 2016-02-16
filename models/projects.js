@@ -5,6 +5,7 @@ var ProjectSchema = new Schema({
 		description:String,
 		code:String,
 		created_date:Date,
+		updated_date:Date,
 		user:{
 			type:Schema.ObjectId,
 			ref:"users"
@@ -26,7 +27,7 @@ ProjectSchema.statics.info = function(id,callback){
 	debugger;
 	Projects.findOne({_id:id}).exec(function(err,p){
 		if (!err){
-			Items.find({project:p}).exec(function(err,items){
+			Items.find({project:p}).populate("user").exec(function(err,items){
 				if (!err){
 					if (callback){						
 						callback(p,items);
@@ -65,6 +66,7 @@ var ItemSchema = new Schema({
 	title:String,
 	description:String,
 	created_date:Date,
+	updated_date:Date,
 	index:Number,
 	user:{
 		type:Schema.ObjectId,
@@ -78,6 +80,7 @@ ItemSchema.statics.add = function(project,user,title,description,index,callback)
 		title:title,
 		description:description,
 		index:index || 1,
+		updated_date:Date.now(),
 		created_date:Date.now()});
 	item.save(function(err,raw){
 		if (callback){

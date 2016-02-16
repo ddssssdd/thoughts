@@ -9,13 +9,16 @@
 						<i class="icon-star orange2 mark-star"></i>
 
 						&nbsp;
-						<img class="middle" alt="John's Avatar" src="/assets/avatars/avatar.png" width="32" />
+						<img class="middle"  src="/assets/avatars/avatar.png" width="32" />
 						&nbsp;
-						<a href="#" class="sender">John Doe</a>
+						<a href="#" class="sender" ng-bind="current.user.name"></a>
 
 						&nbsp;
 						<i class="icon-time bigger-110 orange middle"></i>
-						<span class="time">Today, 7:15 pm</span>
+						<span class="time" ng-bind="current.updated_date | date : 'yyyy-MM-dd HH:mm:ss' "></span>
+
+						&nbsp;
+						<span class="editable editable-click" ng-bind="current.index" id="item_index"> </span>
 					</div>
 
 					<div class="action-buttons pull-right">
@@ -131,19 +134,39 @@
 				    $('#item_title').editable({
 						type: 'text',
 						pk: key,
-						url:'/projects/change_item',
-						name: 'title'
+						url:'/projects/item_change',
+						name: 'title',
+						success: function(response, newValue) {
+							angular.element("#item_title").scope().current.title = newValue;
+							angular.element("#item_title").scope().current.updated_date = Date.now();
+							angular.element("#item_title").scope().$apply();
+						}
+				    });	
+				    $('#item_index').editable({
+						type: 'text',
+						pk: key,
+						url:'/projects/item_change',
+						name: 'index',
+						success: function(response, newValue) {
+							angular.element("#item_title").scope().current.index = newValue;
+							angular.element("#item_title").scope().current.updated_date = Date.now();
+							angular.element("#item_title").scope().$apply();
+						}
 				    });	
 				     $('#item_description').editable({
-				     	mode:"inline",
-						type: 'wysiwyg',
+				     	
+						type: 'textarea',
 						pk: key,
-						url:'/projects/change_item',
+						url:'/projects/item_change',
 						name: 'description',
-						wysiwyg : {
+						textarea : {
 							css : {'width':'100%'}
 						},
 						success: function(response, newValue) {
+							
+							angular.element("#item_title").scope().current.description = newValue;
+							angular.element("#item_title").scope().current.updated_date = Date.now();
+							angular.element("#item_title").scope().$apply();
 						}
 				    });					
 				},500);

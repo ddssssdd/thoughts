@@ -145,5 +145,22 @@ router.post("/remove_item",function(req,res){
 });
 router.get("/item_content",function(req,res){
 	res.render("projects/item_content");
+});
+
+router.post("/item_change",function(req,res){
+	var item = {};
+	item[req.body.name] = req.body.value;
+	item.updated_date = Date.now();
+	var m = require("mongoose");
+	var Items = m.model("project_items");
+	Items.update({_id:req.body.pk},{$set:item},function(err,data){
+		if (!err){
+			res.json({status:true,result:data});
+		}else{
+			res.json({status:false})
+		}
+	});
+
 })
+
 module.exports = router;

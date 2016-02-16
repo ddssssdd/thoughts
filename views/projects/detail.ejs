@@ -180,14 +180,16 @@
 												</label>
 
 												<i class="message-star icon-star orange2"></i>
+												<span class="sender" ng-bind="item.index" style="width:30px"></span>
 												<span class="sender" ng-bind="item.title" ng-click="open_item(item,$event)"></span>
-												<span class="time" ng-bind="item.created_date" style="width:200px;"></span>
+												<span class="time" ng-bind="item.created_date | date" style="width:200px;"></span>
 
 												<span class="summary">
 													<span class="text" ng-bind="item.description" ng-click="open_item(item,$event)">
 														
 													</span>
 												</span>
+
 												<item-content ng-if="item.open" ng-include="'/projects/item_content'" onload="current"></item-content>
 											</div>
 									</div><!-- /.message-list-container -->
@@ -344,13 +346,18 @@
 			});
 		}
 		$scope.open_item = function(item,event){
-			$scope.current = item;
+
 			var message = angular.element(event.target).closest("div.message-item");
 			if (message.hasClass("message-inline-open")){							
 				message.removeClass('message-inline-open');
 				item.open = false;
 				return;
 			}
+			$scope.current = item;
+			angular.forEach($scope.items,function(i){
+				i.open = false;
+			});
+			angular.element("div.message-list div.message-item").removeClass("message-inline-open");
 			message.addClass('message-inline-open')
 			item.open =true;
 			

@@ -32,6 +32,10 @@ angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpServic
 		}
 		angular.element("#top_right_area").show();
 	}
+	$scope.open_project = function(p,event){
+		event.stopPropagation();
+		window.location.href = "/projects/detail/" + p._id;
+	}
 	$scope.init_data();
 	hotkeys.bindTo($scope)		
 	.add({
