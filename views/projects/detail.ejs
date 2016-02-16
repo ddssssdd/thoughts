@@ -1,0 +1,389 @@
+<% include ../shared/header %>
+<div class="page-content" ng-controller="DetailCtrl">
+	<div class="row">
+		<div class="col-xs-12">
+			<!-- PAGE CONTENT BEGINS -->
+			
+			<div class="row">
+				<div class="col-xs-12">
+					<div class="tabbable">
+						<ul id="inbox-tabs" class="inbox-tabs nav nav-tabs padding-16 tab-size-bigger tab-space-1">
+							<li class="li-new-mail pull-right" ng-click="open_add_win($event);">
+								<a data-toggle="tab" href="#write" data-target="write" class="btn-new-mail">
+									<span class="btn bt1n-small btn-purple no-border">
+										<i class=" icon-envelope bigger-130"></i>
+										<span class="bigger-110">Create New Items</span>
+									</span>
+								</a>
+							</li><!-- ./li-new-mail -->
+
+							<li class="active">
+								<a data-toggle="tab" href="#inbox" data-target="inbox">
+									<i class="blue icon-inbox bigger-130"></i>
+									<span class="bigger-110">Items</span>
+								</a>
+							</li>
+
+							<li>
+								<a data-toggle="tab" href="#sent" data-target="sent">
+									<i class="orange icon-location-arrow bigger-130 "></i>
+									<span class="bigger-110">Finished</span>
+								</a>
+							</li>
+
+							<li>
+								<a data-toggle="tab" href="#draft" data-target="draft">
+									<i class="green icon-pencil bigger-130"></i>
+									<span class="bigger-110">Question</span>
+								</a>
+							</li>
+
+							<li class="dropdown">
+								<a data-toggle="dropdown" class="dropdown-toggle" href="#">
+									<i class="pink icon-tags bigger-130"></i>
+
+									<span class="bigger-110">
+										Tags
+										<i class="icon-caret-down"></i>
+									</span>
+								</a>
+
+								<ul class="dropdown-menu dropdown-light-blue dropdown-125">
+									<li>
+										<a data-toggle="tab" href="#tag-1" data-target="tag-1">
+											<span class="mail-tag badge badge-pink"></span>
+											<span class="pink">Tag#1</span>
+										</a>
+									</li>
+
+									<li>
+										<a data-toggle="tab" href="#tag-family" data-target="tag-family">
+											<span class="mail-tag badge badge-success"></span>
+											<span class="green">Family</span>
+										</a>
+									</li>
+
+									<li>
+										<a data-toggle="tab" href="#tag-friends" data-target="tag-friends">
+											<span class="mail-tag badge badge-info"></span>
+											<span class="blue">Friends</span>
+										</a>
+									</li>
+
+									<li>
+										<a data-toggle="tab" href="#tag-work" data-target="tag-work">
+											<span class="mail-tag badge badge-grey"></span>
+											<span class="grey">Work</span>
+										</a>
+									</li>
+								</ul>
+							</li><!-- /.dropdown -->
+						</ul>
+
+						<div class="tab-content no-border no-padding">
+							<div class="tab-pane in active">
+								<div class="message-container">
+									<div id="id-message-list-navbar" class="message-navbar align-center clearfix">
+										<div class="message-bar">
+											<div class="message-infobar" id="id-message-infobar">
+												<span class="blue bigger-150" ng-bind="project.title"></span>
+												(<span class="grey bigger-110" ng-bind="project.code"></span>)
+											</div>
+										</div>
+
+										<div>
+											<div class="messagebar-item-left">
+												<label class="inline middle">
+													<input type="checkbox" id="id-toggle-all" class="ace" />
+													<span class="lbl"></span>
+												</label>
+
+												&nbsp;
+												<div class="inline position-relative">
+													<a href="#" data-toggle="dropdown" class="dropdown-toggle">
+														<i class="icon-caret-down bigger-125 middle"></i>
+													</a>
+
+													<ul class="dropdown-menu dropdown-lighter dropdown-100">
+														<li>
+															<a id="id-select-message-all" href="#">All</a>
+														</li>
+
+														<li>
+															<a id="id-select-message-none" href="#">None</a>
+														</li>
+
+														<li class="divider"></li>
+
+														<li>
+															<a id="id-select-message-unread" href="#">Unread</a>
+														</li>
+
+														<li>
+															<a id="id-select-message-read" href="#">Read</a>
+														</li>
+													</ul>
+												</div>
+											</div>
+
+											<div class="messagebar-item-right">
+												<div class="inline position-relative">
+													<a href="#" data-toggle="dropdown" class="dropdown-toggle">
+														Sort &nbsp;
+														<i class="icon-caret-down bigger-125"></i>
+													</a>
+
+													<ul class="dropdown-menu dropdown-lighter pull-right dropdown-100">
+														<li>
+															<a href="#">
+																<i class="icon-ok green"></i>
+																Date
+															</a>
+														</li>
+
+														<li>
+															<a href="#">
+																<i class="icon-ok invisible"></i>
+																Index
+															</a>
+														</li>
+
+														<li>
+															<a href="#">
+																<i class="icon-ok invisible"></i>
+																Title
+															</a>
+														</li>
+													</ul>
+												</div>
+											</div>
+
+											<div class="nav-search minimized">
+												<form class="form-search">
+													<span class="input-icon">
+														<input type="text" autocomplete="off" class="input-small nav-search-input" placeholder="Search inbox ..." />
+														<i class="icon-search nav-search-icon"></i>
+													</span>
+												</form>
+											</div>
+										</div>
+									</div>
+
+									<div class="message-list-container">
+										<div class="message-list" >
+											<div class="message-item" ng-repeat="item in items" >
+												<label class="inline">
+													<input type="checkbox" class="ace" />
+													<span class="lbl"></span>
+												</label>
+
+												<i class="message-star icon-star orange2"></i>
+												<span class="sender" ng-bind="item.title" ng-click="open_item(item,$event)"></span>
+												<span class="time" ng-bind="item.created_date" style="width:200px;"></span>
+
+												<span class="summary">
+													<span class="text" ng-bind="item.description" ng-click="open_item(item,$event)">
+														
+													</span>
+												</span>
+												<item-content ng-if="item.open" ng-include="'/projects/item_content'" onload="current"></item-content>
+											</div>
+									</div><!-- /.message-list-container -->
+
+									<div class="message-footer clearfix">
+										<div class="pull-left"> {{items.length}} items total </div>
+
+										<div class="pull-right">
+											<div class="inline middle"> page 1 of 16 </div>
+
+											&nbsp; &nbsp;
+											<ul class="pagination middle">
+												<li class="disabled">
+													<span>
+														<i class="icon-step-backward middle"></i>
+													</span>
+												</li>
+
+												<li class="disabled">
+													<span>
+														<i class="icon-caret-left bigger-140 middle"></i>
+													</span>
+												</li>
+
+												<li>
+													<span>
+														<input value="1" maxlength="3" type="text" />
+													</span>
+												</li>
+
+												<li>
+													<a href="#">
+														<i class="icon-caret-right bigger-140 middle"></i>
+													</a>
+												</li>
+
+												<li>
+													<a href="#">
+														<i class="icon-step-forward middle"></i>
+													</a>
+												</li>
+											</ul>
+										</div>
+									</div>
+
+									
+								</div><!-- /.message-container -->
+							</div><!-- /.tab-pane -->
+						</div><!-- /.tab-content -->
+					</div><!-- /.tabbable -->
+				</div><!-- /.col -->
+			</div><!-- /.row -->
+			
+			<!-- project details -->
+			
+			<div id="add_new_popup" class="hide">
+				<div class="widget-box">
+					<div class="widget-header">
+						<h4>Add New Item</h4>
+						<span class="widget-toolbar">
+							<a href="#" data-action="settings">
+								<i class="icon-cog"></i>
+							</a>
+
+							<a href="#" data-action="reload">
+								<i class="icon-refresh"></i>
+							</a>
+
+							<a href="#" data-action="collapse">
+								<i class="icon-chevron-up"></i>
+							</a>
+
+							<a href="#" data-action="close">
+								<i class="icon-remove"></i>
+							</a>
+						</span>
+					</div>
+					<div class="widget-body">
+						<div class="widget-main">
+							<div>
+								<label for="title">Title</label>
+								<input type="text" id="title" ng-model="item.title" class="form-control"/>
+							</div>
+							<div>
+								<label for="text_description">Description</label>
+								<textarea class="form-control" id="text_description" placeholder="Descrption..." ng-model="item.description"></textarea>
+							</div>
+							<div>
+								<label for="index">Index</label>
+								<input type="text" id="index" ng-model="item.index" class="form-control"/>
+							</div>
+							<div>
+								<label></label>
+								<input type="submit" id="index" value="Add" class="form-control" ng-click="add_item($event)"/>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		
+
+			<!-- project details  end-->	
+
+			<!-- PAGE CONTENT ENDS -->
+		</div>
+	</div>
+</div>
+
+<% include ../shared/load_public %>
+
+
+<script>
+	
+	angular.module("thoughts_app").controller("DetailCtrl",function($scope,httpService,hotkeys,Message){
+		
+		$scope.project_id = "<%= project_id %>";
+		$scope.item = {};
+		hotkeys.bindTo($scope)
+		.add({
+			combo:'ctrl+n',
+			description:'Ctrl + N to create new project',
+			callback:function(){
+				$scope.reset_data();
+			}
+		}).
+		add({
+			combo:'ctrl+s',
+			description:"Ctrl + S to save the project",
+			callback:function(){
+				$scope.submit();
+			}
+		})
+		$scope.load_data = function(){
+			var url = "/projects/info";
+			httpService(url,{id:$scope.project_id},function(json){
+				$scope.project = json.project;
+				$scope.items = json.items;
+			});
+		}
+		$scope.load_data();
+		$scope.add_item = function(event){
+			if (event) event.stopPropagation();
+			console.log($scope.item);
+			$scope.item.project_id = $scope.project_id;
+			var url = "/projects/add_item";
+			httpService(url,$scope.item,function(json){
+				//console.log(json);
+				$scope.project = json.project;
+				$scope.items = json.items;
+			});
+		}
+		$scope.open_item = function(item,event){
+			$scope.current = item;
+			var message = angular.element(event.target).closest("div.message-item");
+			if (message.hasClass("message-inline-open")){							
+				message.removeClass('message-inline-open');
+				item.open = false;
+				return;
+			}
+			message.addClass('message-inline-open')
+			item.open =true;
+			
+		}
+		$scope.remove_current = function(event){
+			event.stopPropagation();
+			var index = angular.element(event.target).closest("div.message-item").index();
+			console.log(index);
+			Message.confirm("Do you want to remove "+$scope.current.title,"Cancel","Remove",null,function(){
+				var url ="/projects/remove_item";
+				httpService(url,{item_id:$scope.current._id},function(json){
+					if (json.status){
+						$scope.items.splice(index,1);
+					}
+				})
+			});
+		}
+		$scope.open_add_win = function(event){
+			event.stopPropagation();
+			angular.element("#add_new_popup").removeClass("hide");
+			layer.open({
+			    type: 1,
+			    shade: true,
+			    title: false, 
+			    shadeClose: true,
+    			shade: 0.5,
+    			area: ['400px', '323px'],
+			    content: $('#add_new_popup'),
+			    cancel: function(index){
+			        layer.close(index);
+			        angular.element("#add_new_popup").addClass("hide");
+			    }
+			});
+		}
+	});		
+	
+</script>
+
+
+
+<% include ../shared/footer %>

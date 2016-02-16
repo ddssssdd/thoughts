@@ -22,6 +22,21 @@ ProjectSchema.statics.findByCode = function(code,callback){
 	return this.find({code:code}).populate("user").exec(callback);
 }
 
+ProjectSchema.statics.info = function(id,callback){
+	debugger;
+	Projects.findOne({_id:id}).exec(function(err,p){
+		if (!err){
+			Items.find({project:p}).exec(function(err,items){
+				if (!err){
+					if (callback){						
+						callback(p,items);
+					}
+				}
+			});
+		}
+	});
+}
+
 //virtual 
 ProjectSchema.virtual("detail").get(function(){
 	return this.title +"("+ this.code + ")"+" -- " + this.description;
@@ -40,10 +55,42 @@ ProjectSchema.pre("save",function(next,done){
 });
 ProjectSchema.post("save",function(doc){
 	console.log(doc);
-})
-projects =mongoose.model("projects",ProjectSchema);
-module.exports = projects;
-console.log("Register projects success!");
+});
+
+var ItemSchema = new Schema({
+	project:{
+		type:Schema.ObjectId,
+		ref:"projects"
+	},
+	title:String,
+	description:String,
+	created_date:Date,
+	index:Number,
+	user:{
+		type:Schema.ObjectId,
+		ref:"users"
+	}
+});
+ItemSchema.statics.add = function(project,user,title,description,index,callback){
+	var  item = new Items({
+		project:project,
+		user:user,
+		title:title,
+		description:description,
+		index:index || 1,
+		created_date:Date.now()});
+	item.save(function(err,raw){
+		if (callback){
+			callback(err,raw);
+		}		
+	})
+
+}
+
+var Projects =mongoose.model("projects",ProjectSchema);
+var Items = mongoose.model("project_items",ItemSchema);
+module.exports = Projects;
+console.log("Register projects,project_items success!");
 
 
 /*

@@ -105,10 +105,45 @@ router.get("/list",function(req,res){
 router.post("/info",function(req,res){
 	var m = require("mongoose");
 	var Project = m.model("projects");
+	Project.info(req.body.id,function(project,items){
+		res.json({status:true,project:project,items:items});
+	})
+	/*
 	Project.findOne({_id:new m.Types.ObjectId(req.body.id)},function(err,data){
 		
 		res.json(data);
 	});
+	*/
 });
 
+router.get("/detail/:id",function(req,res){
+	res.render("projects/detail",{project_id:req.params.id});
+});
+
+router.post("/add_item",function(req,res){
+	var m = require("mongoose");
+	m.model("project_items").add(req.body.project_id,req.session.user.id,req.body.title,req.body.description,req.body.index,function(err,raw){
+		if (!err){
+			 m.model("projects").info(req.body.project_id,function(project,items){
+				res.json({status:true,project:project,items:items});
+			});
+		}else{
+			res.json({status:false});
+		}
+
+	});
+});
+router.post("/remove_item",function(req,res){
+	var m = require("mongoose");
+	m.model("project_items").remove({_id:req.body.item_id},function(err,raw){
+		if (!err){
+			res.json({status:true});
+		}else{
+			res.json({status:false});
+		}
+	});
+});
+router.get("/item_content",function(req,res){
+	res.render("projects/item_content");
+})
 module.exports = router;
