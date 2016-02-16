@@ -2,8 +2,7 @@
 			<div class="message-content" >
 				<div class="message-header clearfix">
 					<div class="pull-left">
-						<span class="blue bigger-125" ng-bind="current.title"></span>
-						<input type="text" class="form-control blue bigger-125" ng-model="current.title"/> 
+						<span class="blue bigger-125 editable editable-click" ng-bind="current.title" id="item_title" data-key="{{current._id}}"></span>
 
 						<div class="space-4"></div>
 
@@ -37,7 +36,7 @@
 				<div class="hr hr-double"></div>
 
 				<div class="message-body">
-					<p ng-bind="current.description">
+					<p ng-bind="current.description" class="editable editable-click" id="item_description">
 					</p>
 				</div>
 
@@ -118,3 +117,36 @@
 			</div><!-- /.message-content -->
 
 			<!-- item detail end -->
+<script type="text/javascript">
+			jQuery(function($) {
+			
+				//editables on first profile page
+				$.fn.editable.defaults.mode = 'inline';
+				$.fn.editableform.loading = "<div class='editableform-loading'><i class='light-blue icon-2x icon-spinner icon-spin'></i></div>";
+			    $.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="icon-ok icon-white"></i></button>'+
+			                                '<button type="button" class="btn editable-cancel"><i class="icon-remove"></i></button>';    
+				setTimeout(function(){
+					//editables 
+					var key = $("#item_title").data("key");
+				    $('#item_title').editable({
+						type: 'text',
+						pk: key,
+						url:'/projects/change_item',
+						name: 'title'
+				    });	
+				     $('#item_description').editable({
+				     	mode:"inline",
+						type: 'wysiwyg',
+						pk: key,
+						url:'/projects/change_item',
+						name: 'description',
+						wysiwyg : {
+							css : {'width':'100%'}
+						},
+						success: function(response, newValue) {
+						}
+				    });					
+				},500);
+				
+			});
+</script>
