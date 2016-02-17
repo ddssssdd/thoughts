@@ -60,9 +60,16 @@ router.post("/upload_image",multipartMiddleware,function(req,res){
 				if (!err){					
 								
 					if (req.body.key){						
-						m.model("attachments").add(req.body.key,upload);
+						m.model("attachments").add(req.body.key,upload,function(raw){
+							m.model("attachments").findFile(req.body.key,function(err,data){
+								res.json({status:true,result:data});
+							})	
+						});
+						
+					}else{
+						res.json({status:true,result:upload});		
 					}
-					res.json({status:true,result:upload});	
+					
 				}else{
 					res.json({status:false,message:"Save to uploads error"});
 				}

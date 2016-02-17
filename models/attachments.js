@@ -9,12 +9,14 @@ var attachmentSchema = new Schema({
 		ref:"uploads"
 	}
 });
-attachmentSchema.statics.add = function(ownerId,file){
+attachmentSchema.statics.add = function(ownerId,file,callback){
 	var attachment = new Attachments({ownerId:ownerId,fileId:file});
 	attachment.save(function(err,raw){
 		console.log(raw);
 		if (!err){
-
+			if (callback){
+				callback(raw);
+			}
 		}else{
 			console.log(err);
 		}

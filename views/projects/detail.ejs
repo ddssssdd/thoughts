@@ -451,6 +451,10 @@ document.onpaste = function(event){
 	 				*/
 	 				var url = "/posts/upload_image";
 	 				$.post(url,{imgdata:data,key:key},function(json){
+	 					if (json.status){
+	 						angular.element("#item_title").scope().current.attachments = json.result;
+	 						angular.element("#item_title").scope().$apply();
+	 					}
 		 				console.log(json);	 				
 	 				});
 					
