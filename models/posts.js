@@ -1,13 +1,13 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
-var postSchema = {
+var postSchema = new Schema({
 	content:String,
 	created_date:Date,	
 	user:{
 		type:Schema.ObjectId,
 		ref:"users"
 	}
-}
+});
 
 posts =mongoose.model("posts",postSchema);
 module.exports = posts;

@@ -1,6 +1,6 @@
 var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
-var uploadSchema = {
+var uploadSchema = new Schema({
 	filename:String,
 	link:String,
 	size:Number,
@@ -10,6 +10,6 @@ var uploadSchema = {
 		type:Schema.ObjectId,
 		ref:"users"
 	}
-}
+});
 module.exports = mongoose.model("uploads",uploadSchema);
 console.log("Register uploads success!");

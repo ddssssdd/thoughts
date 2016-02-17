@@ -5,7 +5,53 @@ var config = require("../config");
 var temp_path = __dirname +"/.." + config.uploads.temp;
 var multipartMiddleware = multipart({uploadDir:temp_path});
 
+var move_and_save = function(id,filepath,size,type,fileoriginal,user_id,callback){
+	var mongoose = require("mongoose");
+	var path = require("path");
+	var Upload = mongoose.model("uploads");
+	var fs = require("fs");
+	
+	var oldname = path.basename(filepath);
+	
+	var newname = __dirname +"/.." +config.uploads.posts + oldname;			
+	fs.rename(filepath,newname,function(err){
+		if (err){
+			console.log(err);
+			//res.redirect(req.url);
+			return;
+		}
+		fs.unlink(filepath,function(err){
+			if (err){
+				console.log("Can not drop "+filepath);
+			}
+			
+			var upload = new Upload({filename:fileoriginal,
+				link:config.uploads.link_base+oldname,
+				size:size,
+				type:type,
+				user:user_id,
+				uploaded_date:Date.now()
+			});
+			upload.save(function(err,data){
+				if (!err){
+					mongoose.model("attachments").add(id,upload,function(raw){
+							mongoose.model("attachments").findFile(id,function(err,data){
+								if (callback){
+									callback(data);
+								}
+							})	
+						});
+					/*
+					mongoose.model("attachments").collection.insert(
+						{ownerId:id,fileId:upload.id}
+					);
+					*/
+				}
+			});
+		});
 
+	});
+}	
 
 
 
@@ -35,7 +81,19 @@ router.get("/attach_list",function(req,res){
 		//res.render("posts/list",{posts:posts});
 	});
 });
+router.post("/upload_file",multipartMiddleware,function(req,res){	
+	var id = req.body.key;
+	for(var key in req.files){
+		var file = req.files[key];		
+		
+		if (file && file.size>0 && file.path!=''){
+			move_and_save(id,file.path,file.size,file.type,file.originalFilename,req.session.user.id,function(items){
+				res.json({status:true,result:items});
+			});
+		}		
+	}	
 
+});
 router.post("/upload_image",multipartMiddleware,function(req,res){	
 	var data = req.body.imgdata;
 	data = data.substr(data.indexOf(",")+1);
@@ -103,51 +161,15 @@ router.post("/add", multipartMiddleware,function(req,res){
 				);
 			}
 		}
-		//step 2 save upload files;
-		var move_and_save = function(filepath,size,type,fileoriginal){
-			
-			var oldname = path.basename(filepath);
-			//var newname = __dirname +"\\..\\uploads\\posts\\"+oldname;			
-			
-			var newname = __dirname +"/.." +config.uploads.posts + oldname;			
-			fs.rename(filepath,newname,function(err){
-				if (err){
-					console.log(err);
-					//res.redirect(req.url);
-					return;
-				}
-				fs.unlink(filepath,function(err){
-					if (err){
-						console.log("Can not drop "+filepath);
-					}
-					
-					var upload = new Upload({filename:fileoriginal,
-						link:config.uploads.link_base+oldname,
-						size:size,
-						type:type,
-						user:req.session.user.id,
-						uploaded_date:Date.now()
-					});
-					upload.save(function(err,data){
-						if (!err){
-							mongoose.model("attachments").collection.insert(
-								//{post:post_id,file_id:data._doc._id.id}
-								{ownerId:post_id,fileId:upload.id}
-							);
-						}
-					});
-				});
-
-			});	
-		}
+		
 		for(var key in req.files){
 			var file = req.files[key];		
 			console.log(file);		
 			if (file && file.size>0 && file.path!=''){
-				var path = require("path");
+				
 				var Upload = mongoose.model("uploads");
 				var fs = require("fs");
-				move_and_save(file.path,file.size,file.type,file.originalFilename);
+				move_and_save(post_id,file.path,file.size,file.type,file.originalFilename,req.session.user.id);
 			}		
 		}	
 	}

@@ -403,13 +403,13 @@
 		$scope.show_image = function(event,attachment){
 			event.stopPropagation();
 			$("#image_demo").empty();
-			var image = "<img src='"+attachment.fileId.link+"' width='400' />";
+			var image = "<img src='"+attachment.fileId.link+"' width='800' />";
 			$(image).appendTo("#image_demo");
 			layer.open({
 			    type: 1,
 			    title: false,
 			    closeBtn: 0,
-			    area: '400px',
+			    area: '800px',
 			    skin: 'layui-layer-nobg', //没有背景色
 			    shadeClose: true,
 			    content: $("#image_demo")
@@ -430,7 +430,7 @@
 	
 </script>
 <script type="text/javascript">
-document.onpaste = function(event){
+	document.onpaste = function(event){
 	var items = (event.clipboardData || event.originalEvent.clipboardData).items;
 	console.log(JSON.stringify(items)); // will give you the mime types
 	for (index in items) {
