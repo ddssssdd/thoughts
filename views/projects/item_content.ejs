@@ -44,7 +44,7 @@
 				</div>
 
 				<div class="hr hr-double"></div>
-
+				
 				<div class="message-attachment clearfix">
 					<div class="attachment-title">
 						<span class="blue bolder bigger-110">Attachments</span>
@@ -65,16 +65,17 @@
 								<li>
 									<a href="#">Display in slideshow</a>
 								</li>
+
 							</ul>
 						</div>
 					</div>
 
 					&nbsp;
 					<ul class="attachment-list pull-left list-unstyled">
-						<li>
+						<li ng-repeat="a in current.attachments">
 							<a href="#" class="attached-file inline">
 								<i class="icon-file-alt bigger-110 middle"></i>
-								<span class="attached-name middle">Document1.pdf</span>
+								<span class="attached-name middle" ng-bind="a.fileId.filename"></span>
 							</a>
 
 							<div class="action-buttons inline">
@@ -82,38 +83,20 @@
 									<i class="icon-download-alt bigger-125 blue"></i>
 								</a>
 
-								<a href="#">
+								<a href="javascript:void(0)" ng-click="remove_attachment(a,$event);">
 									<i class="icon-trash bigger-125 red"></i>
 								</a>
 							</div>
 						</li>
 
-						<li>
-							<a href="#" class="attached-file inline">
-								<i class="icon-film bigger-110 middle"></i>
-								<span class="attached-name middle">Sample.mp4</span>
-							</a>
-
-							<div class="action-buttons inline">
-								<a href="#">
-									<i class="icon-download-alt bigger-125 blue"></i>
-								</a>
-
-								<a href="#">
-									<i class="icon-trash bigger-125 red"></i>
-								</a>
-							</div>
-						</li>
+						
 					</ul>
 
 					<div class="attachment-images pull-right">
 						<div class="vspace-sm-4"></div>
 
-						<div>
-							<img width="36" alt="image 4" src="/assets/images/gallery/thumb-4.jpg" />
-							<img width="36" alt="image 3" src="/assets/images/gallery/thumb-3.jpg" />
-							<img width="36" alt="image 2" src="/assets/images/gallery/thumb-2.jpg" />
-							<img width="36" alt="image 1" src="/assets/images/gallery/thumb-1.jpg" />
+						<div id="attachments_images">
+							<img width="36" ng-src="{{a.fileId.link}}" ng-repeat="a in current.attachments" ng-click="show_image($event,a);" />							
 						</div>
 					</div>
 				</div>
@@ -153,7 +136,7 @@
 							angular.element("#item_title").scope().$apply();
 						}
 				    });	
-				     $('#item_description').editable({
+				    $('#item_description').editable({
 				     	
 						type: 'textarea',
 						pk: key,
@@ -168,7 +151,8 @@
 							angular.element("#item_title").scope().current.updated_date = Date.now();
 							angular.element("#item_title").scope().$apply();
 						}
-				    });					
+				    });		
+				   
 				},500);
 				
 			});

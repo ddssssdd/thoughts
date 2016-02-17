@@ -290,7 +290,8 @@
 					</div>
 				</div>
 			</div>
-		
+			<div id="image_demo">
+			</div>
 
 			<!-- project details  end-->	
 
@@ -300,12 +301,12 @@
 </div>
 
 <% include ../shared/load_public %>
-<script src="/assets/js/bootstrap-wysiwyg.min.js"></script>
+
 <script src="/assets/js/x-editable/bootstrap-editable.min.js"></script>
 <script src="/assets/js/x-editable/ace-editable.min.js"></script>
 
 
-<script>
+<script>	
 	
 	angular.module("thoughts_app").controller("DetailCtrl",function($scope,httpService,hotkeys,Message){
 		
@@ -360,6 +361,13 @@
 			angular.element("div.message-list div.message-item").removeClass("message-inline-open");
 			message.addClass('message-inline-open')
 			item.open =true;
+			var url = "/projects/item_attachments";
+			$scope.current.attachments = [];
+			httpService(url,{id:$scope.current._id},function(json){
+				if (json.status){
+					$scope.current.attachments = json.result;
+				}
+			});
 			
 		}
 		$scope.remove_current = function(event){
@@ -392,8 +400,67 @@
 			    }
 			});
 		}
+		$scope.show_image = function(event,attachment){
+			event.stopPropagation();
+			$("#image_demo").empty();
+			var image = "<img src='"+attachment.fileId.link+"' width='400' />";
+			$(image).appendTo("#image_demo");
+			layer.open({
+			    type: 1,
+			    title: false,
+			    closeBtn: 0,
+			    area: '400px',
+			    skin: 'layui-layer-nobg', //没有背景色
+			    shadeClose: true,
+			    content: $("#image_demo")
+			});
+		}
+		$scope.remove_attachment = function(a,event){
+			Message.confirm("Do you want to remove "+a.fileId.filename,"Cancel","Remove",null,function(){
+				var url = "/projects/remove_attachment";
+
+				httpService(url,{id:a._id},function(json){
+					console.log(json);
+					var index = $scope.current.attachments.indexOf(a);
+					$scope.current.attachments.splice(index,1);
+				})
+			});
+		}
 	});		
 	
+</script>
+<script type="text/javascript">
+document.onpaste = function(event){
+	var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+	console.log(JSON.stringify(items)); // will give you the mime types
+	for (index in items) {
+		var item = items[index];
+		if (item.kind === 'file') {
+			var key = $("#item_title").data("key");
+			if (key){
+				var blob = item.getAsFile();
+				var reader = new FileReader();
+				reader.onload = function(event){
+					//console.log(event.target.result);
+					var data = event.target.result;
+					//$("#edpen_img").empty();
+	 				var image  = "<img  width='36' src='"+data+"'/>";
+	 				$(image).appendTo("#attachments_images");
+	 				/*
+	 				return this.canvas.toDataURL("image/png");
+	 				*/
+	 				var url = "/posts/upload_image";
+	 				$.post(url,{imgdata:data,key:key},function(json){
+		 				console.log(json);	 				
+	 				});
+					
+				}; // data url!
+					
+				reader.readAsDataURL(blob);
+			}
+		}
+	}
+}
 </script>
 
 

@@ -47,7 +47,8 @@ router.post("/upload_image",multipartMiddleware,function(req,res){
 	fs.writeFile(filename,buf,"base64",function(err){
 		if (!err){
 			//res.json({status:true,result:{name:filename,size:data.length,type:"image/jpeg"}});
-			var Upload = require("mongoose").model("uploads");
+			var m = require("mongoose");
+			var Upload = m.model("uploads");
 			var upload = new Upload({filename:originalFilename,
 				link:config.uploads.link_base+originalFilename,
 				size:data.size,
@@ -56,8 +57,12 @@ router.post("/upload_image",multipartMiddleware,function(req,res){
 				uploaded_date:Date.now()
 			});
 			upload.save(function(err,data){
-				if (!err){
-					res.json({status:true,result:upload});					
+				if (!err){					
+								
+					if (req.body.key){						
+						m.model("attachments").add(req.body.key,upload);
+					}
+					res.json({status:true,result:upload});	
 				}else{
 					res.json({status:false,message:"Save to uploads error"});
 				}

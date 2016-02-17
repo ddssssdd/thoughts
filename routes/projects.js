@@ -146,7 +146,16 @@ router.post("/remove_item",function(req,res){
 router.get("/item_content",function(req,res){
 	res.render("projects/item_content");
 });
-
+router.post("/item_attachments",function(req,res){
+	var m = require("mongoose");
+	m.model("attachments").findFile(req.body.id,function(err,data){
+		if (!err){
+			res.json({status:true,result:data});
+		}else{
+			res.json({status:false});
+		}
+	})
+});
 router.post("/item_change",function(req,res){
 	var item = {};
 	item[req.body.name] = req.body.value;
@@ -161,6 +170,16 @@ router.post("/item_change",function(req,res){
 		}
 	});
 
-})
+});
+router.post("/remove_attachment",function(req,res){
+	var m = require("mongoose");
+	m.model("attachments").remove({_id:req.body.id},function(err,data){
+		if (!err){
+			res.json({status:true,result:data});
+		}else{
+			res.json({status:false,result:err});
+		}
+	});
+});
 
 module.exports = router;
