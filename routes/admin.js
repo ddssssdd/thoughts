@@ -10,8 +10,8 @@ function RunCmd(cmd, args, cb, end) {
 }
 router.get("/backup",function(req,res){
  	var backup =new RunCmd(
- 		'mongodump',//'mongodump',
- 		['/d', 'thoughts', '/gzip', '/excludeCollectionsWithPrefix:book','/archive:db_backup.zip'],
+ 		'mongodump',//mongodump mongodump  -h 127.0.0.1 -d thoughts --archive=db_backup.zip --gzip 
+ 		['-h','127.0.0.1','-d', 'thoughts', '--gzip', '--excludeCollectionsWithPrefix=book','--archive=db_backup.zip'],
  		function(me,buffer){ me.stdout += (buffer || 'nothing').toString()},
  		function(){
  			console.log(backup.stdout);
@@ -27,7 +27,7 @@ router.get("/backup",function(req,res){
 router.get("/restore",function(req,res){
  	var backup =new RunCmd(
  		'mongorestore',//'mongodump',
- 		['/d', 'thoughts', '/gzip', '/archive:db_backup.zip','/drop'],
+ 		['-h','127.0.0.1','-d', 'thoughts', '--gzip', '--archive=db_backup.zip','--drop'],
  		function(me,buffer){ me.stdout +=(buffer || 'nothing').toString()},
  		function(){
  			console.log(backup.stdout);
