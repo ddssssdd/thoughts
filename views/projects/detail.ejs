@@ -403,17 +403,46 @@
 		$scope.show_image = function(event,attachment){
 			event.stopPropagation();
 			$("#image_demo").empty();
-			var image = "<img src='"+attachment.fileId.link+"' width='800' />";
-			$(image).appendTo("#image_demo");
-			layer.open({
-			    type: 1,
-			    title: false,
-			    closeBtn: 0,
-			    area: '800px',
-			    skin: 'layui-layer-nobg', //没有背景色
-			    shadeClose: true,
-			    content: $("#image_demo")
-			});
+
+			var image = '';
+			var type = 1;
+			if (attachment.fileId.type == 'image/jpeg'){
+				image = "<img src='"+attachment.fileId.link+"' height='500px' />";	
+				$(image).appendTo("#image_demo");
+				var index = layer.open({
+				    type: type,
+				    title: false,
+				    closeBtn: 0,
+				    area: ['auto','500px'],
+				    skin: 'layui-layer-nobg', //没有背景色
+				    shadeClose: true,
+				    maxmin: true,
+				    content: $("#image_demo")
+				});
+			}else{
+				type = 2;
+				//image = "<embed src='"+attachment.fileId.link+"' width='680' height='490' alt='pdf' type='application/pdf' pluginspage='http://www.adobe.com/products/acrobat/readstep2.html' />";
+				//$(image).appendTo("#image_demo");
+				var index = layer.open({
+				    type: 2,
+				    title:"Preview",
+				    content: '<%= base_url %>' + attachment.fileId.link,
+				    //area: ['300px', '195px'],
+				    maxmin: true
+				});
+				layer.full(index);
+			}
+			
+			
+		}
+		$scope.preview_attachment = function(attachment,event){
+			$scope.show_image(event,attachment);
+			return;
+			if (attachment.fileId.type=='image/jpeg'){
+				$scope.show_image(event,attachment);
+			}else{
+				Message.msg("working on it");
+			}
 		}
 		$scope.remove_attachment = function(a,event){
 			Message.confirm("Do you want to remove "+a.fileId.filename,"Cancel","Remove",null,function(){

@@ -79,8 +79,8 @@
 							</a>
 
 							<div class="action-buttons inline">
-								<a href="#">
-									<i class="icon-download-alt bigger-125 blue"></i>
+								<a href="javascript:void(0)" ng-click="preview_attachment(a,$event)">
+									<i class="icon-zoom-in bigger-125 blue"></i>
 								</a>
 
 								<a href="javascript:void(0)" ng-click="remove_attachment(a,$event);">
@@ -102,7 +102,7 @@
 						<div class="vspace-sm-4"></div>
 
 						<div id="attachments_images">
-							<img width="36" ng-src="{{a.fileId.link}}" ng-repeat="a in current.attachments" ng-click="show_image($event,a);" />							
+							<img width="36" ng-src="{{a.fileId.link}}" ng-repeat="a in current.attachments | filter:{fileId:{type:'image/jpeg'}}" ng-click="show_image($event,a);" />							
 						</div>
 					</div>
 				</div>
