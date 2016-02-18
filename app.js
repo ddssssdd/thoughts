@@ -92,6 +92,7 @@ app.use("/posts",require("./routes/posts"));
 app.use("/projects",require("./routes/projects"));
 app.use("/spiders",require("./routes/spiders"));
 app.use("/bing", require("./routes/bing.js"));
+app.use("/admin", require("./routes/admin.js"));
 
 app.listen(process.env.PORT || config.app, function () {
   console.log('Website <<Thoughts>> listening on port ' + (process.env.PORT || config.app));
