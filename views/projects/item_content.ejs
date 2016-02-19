@@ -108,12 +108,15 @@
 		</div>
 		<div class="hr hr-double"></div>
 		<div class="row">
+			<div class="col-md-12">
+				<div class="table table-bordered">
+				</div>
 			<form class="form-inline" action="/issues/add" method="POST">
 			  <div class="form-group">
 			    <label class="sr-only" for="exampleInputEmail3">Title</label>
 			    <input type="text" class="form-control" id="exampleInputEmail3" placeholder="Title" name="title">
 			  </div>
-			  <div class="form-group">
+			  <div class="form-group" style="width:400px;!important">
 			    <label class="sr-only" for="exampleInputPassword3">Description</label>
 			    <input type="text" class="form-control" id="exampleInputPassword3" placeholder="Description" name="description">
 			  </div>
@@ -126,9 +129,11 @@
 			    	<option>End</option>
 			    </select>
 			  </div>
-			  <button type="submit" class="btn btn-default">Add</button>
+
+			  <button type="submit" class="btn btn-default">Add Issue</button>
 			  <input type="hidden" ng-model="current._id" name="owner"/>
 			</form>
+		</div>
 		</row>
 	</div><!-- /.message-content -->
 
