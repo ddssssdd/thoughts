@@ -24,7 +24,7 @@ ProjectSchema.statics.findByCode = function(code,callback){
 }
 
 ProjectSchema.statics.info = function(id,callback){
-	debugger;
+	
 	Projects.findOne({_id:id}).exec(function(err,p){
 		if (!err){
 			Items.find({project:p}).populate("user").exec(function(err,items){
@@ -67,7 +67,7 @@ var ItemSchema = new Schema({
 	description:String,
 	created_date:Date,
 	updated_date:Date,
-	index:Number,
+	index:Number,	
 	user:{
 		type:Schema.ObjectId,
 		ref:"users"
@@ -89,9 +89,51 @@ ItemSchema.statics.add = function(project,user,title,description,index,callback)
 	})
 
 }
+var IssueSchema = new Schema({
+	owner:String,
+	title:String,
+	description:String,
+	status:String,
+	created_date:Date,
+	updated_date:Date,
+	user:{
+		type:Schema.ObjectId,
+		ref:'users'
+	}
+});
+
+IssueSchema.statics.add = function(owner,title,description,status,user_id,callback){
+	var issue = {
+		owner:owner,
+		title:title,
+		description:description,
+		status:status,
+		created_date:Date.now(),
+		user:user_id
+	}
+	callback = callback || function(arr){};
+	new Issue(issue).save(function(err,raw){
+		if (!err){
+			Issue.findIssues(owner,callback);
+		}else{
+			callback([]);
+		}
+	});
+}
+IssueSchema.statics.findIssues =  function(owner,callback){
+	callback = callback || function(arr){};
+	Issue.find({owner:owner}).exec(function(err,data){
+		if(!err){
+			callback(data);
+		}else{
+			callback([]);
+		}
+	});
+}
 
 var Projects =mongoose.model("projects",ProjectSchema);
 var Items = mongoose.model("project_items",ItemSchema);
+var Issue = mongoose.model("project_issues",IssueSchema);
 module.exports = Projects;
 console.log("Register projects,project_items success!");
 

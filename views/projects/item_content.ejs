@@ -1,112 +1,136 @@
 <!-- item detail -->
-			<div class="message-content" >
-				<div class="message-header clearfix">
-					<div class="pull-left">
-						<span class="blue bigger-125 editable editable-click" ng-bind="current.title" id="item_title" data-key="{{current._id}}"></span>
+	<div class="message-content" >
+		<div class="message-header clearfix">
+			<div class="pull-left">
+				<span class="blue bigger-125 editable editable-click" ng-bind="current.title" id="item_title" data-key="{{current._id}}"></span>
 
-						<div class="space-4"></div>
+				<div class="space-4"></div>
 
-						<i class="icon-star orange2 mark-star"></i>
+				<i class="icon-star orange2 mark-star"></i>
 
+				&nbsp;
+				<img class="middle"  src="/assets/avatars/avatar.png" width="32" />
+				&nbsp;
+				<a href="#" class="sender" ng-bind="current.user.name"></a>
+
+				&nbsp;
+				<i class="icon-time bigger-110 orange middle"></i>
+				<span class="time" ng-bind="current.updated_date | date : 'yyyy-MM-dd HH:mm:ss' "></span>
+
+				&nbsp;
+				<span class="editable editable-click" ng-bind="current.index" id="item_index"> </span>
+			</div>
+
+			<div class="action-buttons pull-right">
+				<a href="#">
+					<i class="icon-reply green icon-only bigger-130"></i>
+				</a>
+
+				<a href="#">
+					<i class="icon-mail-forward blue icon-only bigger-130"></i>
+				</a>
+
+				<a href="javascript:void(0);" ng-click="remove_current($event);">
+					<i class="icon-trash red icon-only bigger-130"></i>
+				</a>
+			</div>
+		</div>
+
+		<div class="hr hr-double"></div>
+
+		<div class="message-body">
+			<p ng-bind="current.description" class="editable editable-click" id="item_description">
+			</p>
+		</div>
+
+		<div class="hr hr-double"></div>
+		
+		<div class="message-attachment clearfix">
+			<div class="attachment-title">
+				<span class="blue bolder bigger-110">Attachments</span>
+				&nbsp;
+				<span class="grey">({{current.attachments.length}} files)</span>
+
+				<div class="inline position-relative">
+					<a href="#" data-toggle="dropdown" class="dropdown-toggle">
 						&nbsp;
-						<img class="middle"  src="/assets/avatars/avatar.png" width="32" />
-						&nbsp;
-						<a href="#" class="sender" ng-bind="current.user.name"></a>
+						<i class="icon-caret-down bigger-125 middle"></i>
+					</a>
 
-						&nbsp;
-						<i class="icon-time bigger-110 orange middle"></i>
-						<span class="time" ng-bind="current.updated_date | date : 'yyyy-MM-dd HH:mm:ss' "></span>
-
-						&nbsp;
-						<span class="editable editable-click" ng-bind="current.index" id="item_index"> </span>
-					</div>
-
-					<div class="action-buttons pull-right">
-						<a href="#">
-							<i class="icon-reply green icon-only bigger-130"></i>
-						</a>
-
-						<a href="#">
-							<i class="icon-mail-forward blue icon-only bigger-130"></i>
-						</a>
-
-						<a href="javascript:void(0);" ng-click="remove_current($event);">
-							<i class="icon-trash red icon-only bigger-130"></i>
-						</a>
-					</div>
-				</div>
-
-				<div class="hr hr-double"></div>
-
-				<div class="message-body">
-					<p ng-bind="current.description" class="editable editable-click" id="item_description">
-					</p>
-				</div>
-
-				<div class="hr hr-double"></div>
-				
-				<div class="message-attachment clearfix">
-					<div class="attachment-title">
-						<span class="blue bolder bigger-110">Attachments</span>
-						&nbsp;
-						<span class="grey">({{current.attachments.length}} files)</span>
-
-						<div class="inline position-relative">
-							<a href="#" data-toggle="dropdown" class="dropdown-toggle">
-								&nbsp;
-								<i class="icon-caret-down bigger-125 middle"></i>
-							</a>
-
-							<ul class="dropdown-menu dropdown-lighter">
-								<li>
-									<a href="#">Download all as zip</a>
-								</li>
-
-								<li>
-									<a href="#">Display in slideshow</a>
-								</li>
-
-							</ul>
-						</div>
-					</div>
-
-					&nbsp;
-					<ul class="attachment-list pull-left list-unstyled">
-						<li ng-repeat="a in current.attachments">
-							<a ng-href="{{a.fileId.link}}" class="attached-file inline">
-								<i class="icon-file-alt bigger-110 middle"></i>
-								<span class="attached-name middle" ng-bind="a.fileId.filename"></span>
-							</a>
-
-							<div class="action-buttons inline">
-								<a href="javascript:void(0)" ng-click="preview_attachment(a,$event)">
-									<i class="icon-zoom-in bigger-125 blue"></i>
-								</a>
-
-								<a href="javascript:void(0)" ng-click="remove_attachment(a,$event);">
-									<i class="icon-trash bigger-125 red"></i>
-								</a>
-							</div>
-						</li>
-						<li >
-							<form action="/posts/upload_file" method="POST" enctype='multipart/form-data'>
-								<input type = "file" name="file" />
-								<input type="hidden" value="{{current._id}}" name="key"/>
-							</form>
+					<ul class="dropdown-menu dropdown-lighter">
+						<li>
+							<a href="#">Download all as zip</a>
 						</li>
 
-						
+						<li>
+							<a href="#">Display in slideshow</a>
+						</li>
+
 					</ul>
-
-					<div class="attachment-images pull-right">
-						<div class="vspace-sm-4"></div>
-
-						<div id="attachments_images">
-							<img width="36" ng-src="{{a.fileId.link}}" ng-repeat="a in current.attachments | filter:{fileId:{type:'image/jpeg'}}" ng-click="show_image($event,a);" />							
-						</div>
-					</div>
 				</div>
-			</div><!-- /.message-content -->
+			</div>
+
+			&nbsp;
+			<ul class="attachment-list pull-left list-unstyled">
+				<li ng-repeat="a in current.attachments">
+					<a ng-href="{{a.fileId.link}}" class="attached-file inline">
+						<i class="icon-file-alt bigger-110 middle"></i>
+						<span class="attached-name middle" ng-bind="a.fileId.filename"></span>
+					</a>
+
+					<div class="action-buttons inline">
+						<a href="javascript:void(0)" ng-click="preview_attachment(a,$event)">
+							<i class="icon-zoom-in bigger-125 blue"></i>
+						</a>
+
+						<a href="javascript:void(0)" ng-click="remove_attachment(a,$event);">
+							<i class="icon-trash bigger-125 red"></i>
+						</a>
+					</div>
+				</li>
+				<li >
+					<form action="/posts/upload_file" method="POST" enctype='multipart/form-data'>
+						<input type = "file" name="file" />
+						<input type="hidden" value="{{current._id}}" name="key"/>
+					</form>
+				</li>
+
+				
+			</ul>
+
+			<div class="attachment-images pull-right">
+				<div class="vspace-sm-4"></div>
+
+				<div id="attachments_images">
+					<img width="36" ng-src="{{a.fileId.link}}" ng-repeat="a in current.attachments | filter:{fileId:{type:'image/jpeg'}}" ng-click="show_image($event,a);" />							
+				</div>
+			</div>
+		</div>
+		<div class="hr hr-double"></div>
+		<div class="row">
+			<form class="form-inline" action="/issues/add" method="POST">
+			  <div class="form-group">
+			    <label class="sr-only" for="exampleInputEmail3">Title</label>
+			    <input type="text" class="form-control" id="exampleInputEmail3" placeholder="Title" name="title">
+			  </div>
+			  <div class="form-group">
+			    <label class="sr-only" for="exampleInputPassword3">Description</label>
+			    <input type="text" class="form-control" id="exampleInputPassword3" placeholder="Description" name="description">
+			  </div>
+			  <div class="form-group">
+			    <label class="sr-only" >Status</label>
+			    <select name="status" class="form-control">
+			    	<option>New</option>
+			    	<option>In progress</option>
+			    	<option>Testing</option>
+			    	<option>End</option>
+			    </select>
+			  </div>
+			  <button type="submit" class="btn btn-default">Add</button>
+			  <input type="hidden" ng-model="current._id" name="owner"/>
+			</form>
+		</row>
+	</div><!-- /.message-content -->
 
 			<!-- item detail end -->
 <script type="text/javascript">
@@ -143,14 +167,12 @@
 						}
 				    });	
 				    $('#item_description').editable({
-				     	
 						type: 'textarea',
 						pk: key,
 						url:'/projects/item_change',
-						name: 'description',
-						textarea : {
-							css : {'width':'100%'}
-						},
+						name: 'description',						
+						inputclass:'form-control input-lg',
+						rows:10,
 						success: function(response, newValue) {
 							
 							angular.element("#item_title").scope().current.description = newValue;

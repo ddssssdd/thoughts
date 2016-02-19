@@ -90,6 +90,7 @@ route(app);
 
 app.use("/posts",require("./routes/posts"));
 app.use("/projects",require("./routes/projects"));
+app.use("/issues",require("./routes/issues"));
 app.use("/spiders",require("./routes/spiders"));
 app.use("/bing", require("./routes/bing.js"));
 app.use("/admin", require("./routes/admin.js"));
