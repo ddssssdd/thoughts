@@ -164,7 +164,7 @@
 				    		//console.log(file);
 				    		//$(this).closest("form").submit();
 				    		var formData = new FormData($(this).closest("form")[0]);
-
+				    		var index = layer.load();
 						 	$.ajax({
 						 		url:"/posts/upload_file",
 						 		dataType:'json',
@@ -172,6 +172,7 @@
 						 		jsonp:false,
 						 		type:'POST',
 						 		success:function(json){
+						 			layer.close(index);
 						 			if(json.status){	 				
 						 				angular.element("#item_title").scope().current.attachments = json.result;
 						 				angular.element("#item_title").scope().$apply();
