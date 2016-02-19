@@ -41,8 +41,8 @@ app.engine('html', require('ejs').renderFile);
 
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb',extended: true }));
+app.use(bodyParser.json({limit: '5000mb'}));
+app.use(bodyParser.urlencoded({limit: '5000mb',extended: true }));
 app.use(cookieParser());
 
 var store = new MongoStore({
