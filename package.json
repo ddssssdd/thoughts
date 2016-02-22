@@ -22,6 +22,7 @@
     "node-bing-api": "^2.3.0",
     "node-schedule": "^0.6.0",
     "nodemailer": "^2.0.0",
+    "promise": "^7.1.1",
     "raw-body": "^2.1.5",
     "request": "^2.69.0",
     "serve-favicon": "^2.3.0"

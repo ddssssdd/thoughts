@@ -91,7 +91,8 @@
 			<tr>
 				<td class="text-center"><a href="/spiders/read/<%= b.id %>"> <%= b.title %> </a></td>
 				<td><%= b.url %> </td>
-				<td><%= b.source %> </td>
+				<td><input type="checkbox" <%= b.in_scheduled?'checked':'' %> data-id='<%= b.id %>' onchange="update_book(this);"/> </td>
+				<td><%= b.last_updated %></td>
 			</tr>
 		<% }) %>
 	</table>
@@ -100,7 +101,15 @@
 </div>
 
 <script>	
-
+	function update_book(check){
+		var check = $(check);
+		var in_scheduled = check.is(":checked");
+		console.log(check.data('id'));
+		$.post("/spiders/update_book",{id:check.data("id"),in_scheduled:check.is(":checked")},function(json){
+			console.log(json);
+			//window.location.reload();
+		})
+	}
 	
 </script>
 	

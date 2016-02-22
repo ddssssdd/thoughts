@@ -130,6 +130,13 @@
 				}
 			}
 		}
+		$scope.remove_chapter = function(){
+			Message.msg("Delete current chapter " + $scope.current.title);
+			var url = "/spiders/remove_chapter";
+			httpService(url,{id:$scope.current._id},function(json){
+				$scope.goto_chapter(1);
+			})
+		}
 		$scope.init_data();
 		hotkeys.bindTo($scope)
 		.add({
@@ -142,6 +149,12 @@
 			combo:"left",
 			callback:function(){
 				$scope.goto_chapter(-1);
+			}
+		})
+		.add({
+			combo:'del',
+			callback:function(){
+				$scope.remove_chapter();
 			}
 		})
 		.add({

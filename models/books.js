@@ -10,7 +10,8 @@ var BookSchema = new Schema({
 		title:String,
 		url:String,
 		source:String,
-		last_updated:Date
+		last_updated:Date,
+		in_scheduled:Boolean
 	});
 
 
