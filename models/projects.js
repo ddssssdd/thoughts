@@ -158,7 +158,7 @@ IssueSchema.statics.add = function(project_id,owner,title,description,status,use
 }
 IssueSchema.statics.findIssues =  function(owner,callback){
 	callback = callback || function(arr){};
-	Issue.find({owner:{$in:[owner]}).populate("project").exec(function(err,data){
+	Issue.find({owner:{$in:[owner]}}).populate("project").exec(function(err,data){
 		if(!err){
 			callback(data);
 		}else{
