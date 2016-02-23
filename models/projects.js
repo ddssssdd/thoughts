@@ -37,6 +37,32 @@ ProjectSchema.statics.info = function(id,callback){
 		}
 	});
 }
+ProjectSchema.statics.current_code = function(p_id,callback){
+	Issue.count({project:p_id}).exec(function(err,data){
+		if (!err){
+			callback((data+1)+'');	
+		}else{
+			callback('');
+		}	
+		
+	});
+	/*
+	Projects.findOne({_id:p_id}).exec(function(err,p){
+		if (!err){
+			Issue.count({project:p}).exec(function(err,data){
+				if (!err){
+					callback(p.code.trim()+'-'+(data+1));	
+				}else{
+					callback('');
+				}	
+				
+			})
+		}else{
+			callback('');
+		}
+	});
+	*/
+}
 
 //virtual 
 ProjectSchema.virtual("detail").get(function(){
@@ -73,7 +99,7 @@ var ItemSchema = new Schema({
 		ref:"users"
 	}
 });
-ItemSchema.statics.add = function(project,user,title,description,index,callback){
+ItemSchema.statics.add = function(project,user,title,description,index,callback){	
 	var  item = new Items({
 		project:project,
 		user:user,
@@ -90,10 +116,15 @@ ItemSchema.statics.add = function(project,user,title,description,index,callback)
 
 }
 var IssueSchema = new Schema({
-	owner:String,
+	project:{
+		ref:"projects",
+		type:Schema.ObjectId
+	},
+	owner:[],
 	title:String,
 	description:String,
 	status:String,
+	bref:String,
 	created_date:Date,
 	updated_date:Date,
 	user:{
@@ -102,33 +133,53 @@ var IssueSchema = new Schema({
 	}
 });
 
-IssueSchema.statics.add = function(owner,title,description,status,user_id,callback){
-	var issue = {
-		owner:owner,
-		title:title,
-		description:description,
-		status:status,
-		created_date:Date.now(),
-		user:user_id
-	}
-	callback = callback || function(arr){};
-	new Issue(issue).save(function(err,raw){
-		if (!err){
-			Issue.findIssues(owner,callback);
-		}else{
-			callback([]);
+IssueSchema.statics.add = function(project_id,owner,title,description,status,user_id,callback){
+	Projects.current_code(project_id,function(bref){
+		var issue = {
+			project:project_id,
+			owner:[owner],
+			title:title,
+			description:description,
+			status:status,
+			bref:bref,
+			created_date:Date.now(),
+			user:user_id
 		}
-	});
+		callback = callback || function(arr){};
+		new Issue(issue).save(function(err,raw){
+			if (!err){
+				Issue.findIssues(owner,callback);
+			}else{
+				callback([]);
+			}
+		});
+	})
+	
 }
 IssueSchema.statics.findIssues =  function(owner,callback){
 	callback = callback || function(arr){};
-	Issue.find({owner:owner}).exec(function(err,data){
+	Issue.find({owner:{$in:[owner]}).populate("project").exec(function(err,data){
 		if(!err){
 			callback(data);
 		}else{
 			callback([]);
 		}
 	});
+}
+IssueSchema.statics.findIssueByCode = function(code,bref,callback){
+	Projects.findOne({code:code}).exec(function(err,p){
+		if (!err){
+			Issue.findOne({bref:bref,project:p}).exec(function(err,issue){
+				if (!err){
+					callback(issue);
+				}else{
+					callback(null);
+				}
+			});
+		}else{
+			callback(null);
+		}
+	})
 }
 
 var Projects =mongoose.model("projects",ProjectSchema);
