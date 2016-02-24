@@ -256,7 +256,7 @@
 
 												
 												<span class="sender" ng-bind="item.status" style="width:30px"></span>
-												<span class="sender"><a ng-href="/issue/{{item._id}}" ng-bind="item.title"></a></span>
+												<span class="sender"><a ng-href="/issues/{{project.code}}-{{item.bref}}" ng-bind="item.title"></a></span>
 												<span class="time" ng-bind="item.created_date | date" style="width:200px;"></span>
 
 												<span class="summary">

@@ -171,7 +171,7 @@ IssueSchema.statics.findIssueByCode = function(code,bref,callback){
 		if (!err){
 			Issue.findOne({bref:bref,project:p}).exec(function(err,issue){
 				if (!err){
-					callback(issue);
+					callback({project:p,issue:issue});
 				}else{
 					callback(null);
 				}

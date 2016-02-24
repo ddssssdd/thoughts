@@ -1,0 +1,45 @@
+<% include ../shared/header %>
+<div class="page-content">
+	<div class="row">
+		<div class="col-xs-12">
+			<!-- PAGE CONTENT BEGINS -->
+			<div  ng-controller="IssueCtrl">	
+			<h1>Issue Detail</h1>
+			</div><!-- Project Ctrl end -->
+					
+	
+			<!-- PAGE CONTENT ENDS -->
+		</div>
+	</div>
+</div>
+
+<% include ../shared/load_public %>
+
+
+<script>
+	
+	angular.module("thoughts_app").controller("IssueCtrl",function($scope,httpService,hotkeys){
+		
+		$scope.code ='<%- code %>';
+		$scope.bref ='<%- bref %>';
+		$scope.project = null;
+		$scope.issue = null;
+		$scope.load_data = function(){
+			var url = "/issues/"+$scope.code+"-"+$scope.bref;
+			httpService(url,{},function(json){
+				if (json.status){
+					$scope.project = json.result.project;
+					$scope.issue = json.result.issue;	
+				}
+				
+			});
+		}
+		$scope.load_data();
+		
+	});		
+	
+</script>
+
+
+
+<% include ../shared/footer %>

@@ -77,10 +77,13 @@ app.use(function (req, res, next) {
   })
 })
 */
+/*
 app.use(function (req,res,next){
 	require("./common/log")(req);
 	next();
 });
+*/
+app.use(require("./middleware/common"));
 app.use("/users",require("./routes/users"));
 
 app.use(require("./middleware/security"));

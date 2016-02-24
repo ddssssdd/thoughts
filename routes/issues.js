@@ -1,5 +1,16 @@
 var express = require("express");
 var router = express.Router();
+router.get("/:code-:bref",function(req,res){
+	res.render("issues/index",req.params)
+});
+router.post("/:code-:bref",function(req,res){
+	var m = require("mongoose");
+	var Issue = m.model("project_issues");
+	var Project = m.model("projects");
+	Issue.findIssueByCode(req.params.code,req.params.bref,function(issue){
+		res.json({status:true,result:issue});
+	});
+});
 
 router.post("/add",function(req,res){
 	var m = require("mongoose");
@@ -15,6 +26,18 @@ router.post("/add",function(req,res){
 	});
 });
 router.all("/list/:project_id",function(req,res){
+	var m = require("mongoose");
+	var Issue = m.model("project_issues");
+	var Project = m.model("project_items");
+	Issue.find({project:req.params.project_id}).exec(function(err,data){
+		if (!err){
+			res.json({status:true,result:data});
+		}else{
+			res.json([]);
+		}
+	})
+});
+router.all("/list_old/:project_id",function(req,res){
 	var m = require("mongoose");
 	var Issue = m.model("project_issues");
 	var Project = m.model("project_items");
@@ -64,12 +87,13 @@ router.all("/list/:project_id",function(req,res){
 	},null);
 	
 });
+
 router.get("/:code-:bref",function(req,res){
 	var m = require("mongoose");
 	var Issue = m.model("project_issues");
 	var Project = m.model("projects");
 	Issue.findIssueByCode(req.params.code,req.params.bref,function(issue){
-		res.json(issue);
+		res.json({status:true,result:issue});
 	});
 });
 module.exports = router;
