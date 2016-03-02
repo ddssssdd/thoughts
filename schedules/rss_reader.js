@@ -1,11 +1,12 @@
 var Reader = function(config){
 	var schedule = require('node-schedule');
-  	console.log("Scheduling to auto fetch news at "+ Date.now());
+  	console.log("Scheduling to auto fetch news at "+ Date.now().toString());
 
   	var rule = new schedule.RecurrenceRule();
   	//rule.minute = 1;
   	rule.second = 30;
-  	var j = schedule.scheduleJob("* /5 * * * *", function(){  
+  	//var j = schedule.scheduleJob("* /5 * * * *", function(){  
+  	var j = schedule.scheduleJob(rule, function(){  
     	var m = require("mongoose");
     	var Site = m.model("feed_sites");
     	Site.sites(function(err,sites){
@@ -15,7 +16,7 @@ var Reader = function(config){
     				var parser = require("rss-parser");
     				parser.parseURL(site.url,function(err,result){
     					result.feed.entries.forEach(function(entry){
-    						console.log(entry);
+    						//console.log(entry);
     						Site.feed(site,entry);
     					});
     				});
