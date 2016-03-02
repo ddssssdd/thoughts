@@ -3,8 +3,8 @@ var Reader = function(config){
   	console.log("Scheduling to auto fetch news at "+ Date.now().toString());
 
   	var rule = new schedule.RecurrenceRule();
-  	//rule.minute = 1;
-  	rule.second = 30;
+  	rule.minute = 1;
+  	//rule.second = 30;
   	//var j = schedule.scheduleJob("* /5 * * * *", function(){  
   	var j = schedule.scheduleJob(rule, function(){  
     	var m = require("mongoose");
