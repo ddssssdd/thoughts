@@ -97,6 +97,7 @@ app.use("/issues",require("./routes/issues"));
 app.use("/spiders",require("./routes/spiders"));
 app.use("/bing", require("./routes/bing.js"));
 app.use("/admin", require("./routes/admin.js"));
+app.use("/news", require("./routes/news.js"));
 
 app.use("/test", require("./test/route.js"));
 

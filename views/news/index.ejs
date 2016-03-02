@@ -1,0 +1,78 @@
+<% include ../shared/header %>
+<link rel="stylesheet" href="/assets/css/bootstrap-editable.css" />
+
+<div class="page-content" ng-controller="NewsCtrl">
+	<div class="row">
+		<div class="col-md-12">
+			<!-- PAGE CONTENT BEGINS -->
+			<table class="table table-bordered">
+			<tr ng-repeat="item in sites">
+				<td width="20%">
+					<input type="text" ng-model="item.name"/>
+				</td>
+				<td width="50%">
+					<input type="text" ng-model="item.url" style="width:100%"/>
+				</td>
+				<td>
+					<button class="button" ng-click="add_site(item,$event)">Update</button>
+
+					<button class="button" ng-click="remove_site(item,$event)">Delete</button>
+
+				</td>
+			</tr>
+			<tr>
+			<td>
+				<input type="text" ng-model="site.name"/>
+			</td>
+			<td>
+				<input type="text" style="width:100%" ng-model="site.url"/>
+			</td>
+			<td>
+				<button class="button" ng-click="add_site(null,$event)">Add</button>
+			</td>
+			</tr>
+			</table>
+			
+
+			<!-- PAGE CONTENT ENDS -->
+		</div>
+		
+	</div>
+</div>	
+<% include ../shared/load_public %>
+<script src="/assets/js/x-editable/bootstrap-editable.min.js"></script>
+<script src="/assets/js/x-editable/ace-editable.min.js"></script>
+
+<script type="text/javascript">
+	angular.module("thoughts_app").controller("NewsCtrl",function($scope,httpService,hotkeys,Message,userInfo){
+		$scope.user = userInfo.user;
+		$scope.site = {name:'',url:''};
+		$scope.sites = [];
+		$scope.load_data = function(){
+			httpService("/news/sites",{},function(json){
+				$scope.sites = json.result;
+			})	
+		}
+		$scope.add_site = function(site,event){
+			console.log(site);
+			event.stopPropagation();
+			site = site || $scope.site;
+			httpService("/news/add_site",site,function(json){
+				$scope.sites = json.result;
+			})
+		}
+		$scope.remove_site = function(site,event){
+			event.stopPropagation();
+			httpService("/news/remove_site",{id:site._id},function(json){
+				$scope.sites = json.result;
+			})
+		}
+
+		$scope.load_data();
+	});
+</script>	
+		
+
+
+		
+<% include ../shared/footer %>

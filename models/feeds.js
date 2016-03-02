@@ -4,7 +4,7 @@ var siteSchema = new Schema({
 	name:String,
 	url:String,
 	last_updated:Date
-});
+});								
 
 var feedSchema = new Schema({
 	site:{ ref:'feed_sites',type:Schema.ObjectId},
@@ -12,7 +12,8 @@ var feedSchema = new Schema({
 	link:String,
 	pubDate:Date,
 	author:String,
-	content:String
+	content:String,
+	has_read:Boolean
 })
 
 // find by url, if not then insert, if found then update
@@ -26,17 +27,32 @@ siteSchema.statics.add = function(name,url,callback){
 			if (err){
 				if (callback) callback(err,null);
 			}else{
-				Site.findOne({url:url}).lean().exec(function(err,site){
+				Site.find().lean().exec(function(err,sites){
 					if (err){
 						if (callback) callback(err,null);		
 					}else{
-						if (callback) callback(null,site);
+						if (callback) callback(null,sites);
 					}
 				})
 			}
 			
 		}
 	);
+}
+siteSchema.statics.remove_site = function(site,callback){
+	Site.remove({_id:site}).exec(function(err,raw){
+		if (!err){
+			Site.find().lean().exec(function(err,sites){
+				if (err){
+					if (callback) callback(err,null);		
+				}else{
+					if (callback) callback(null,sites);
+				}
+			})
+		}else{
+			if (callback) callback(err,null);
+		}
+	})
 }
 siteSchema.statics.feed = function(site,entry,callback){
 	var item = { site:site, title:entry.title, link:entry.link, pubDate:entry.pubDate,
@@ -53,7 +69,9 @@ siteSchema.statics.feed = function(site,entry,callback){
 siteSchema.statics.list = function(callback){
 	Feed.find().lean().populate("site").exec(callback);
 }
-
+siteSchema.statics.sites = function(callback){
+	Site.find().lean().exec(callback);
+}
 
 
 

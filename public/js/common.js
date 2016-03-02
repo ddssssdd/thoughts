@@ -126,6 +126,10 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 				success(json);
 			}
 			
+		}).error(function(err){
+			Message.close(handler);
+			
+			Message.msg(err);
 		});
 	}
 	return Post;
