@@ -25,6 +25,7 @@
     "promise": "^7.1.1",
     "raw-body": "^2.1.5",
     "request": "^2.69.0",
+    "rss-parser": "^2.2.4",
     "serve-favicon": "^2.3.0"
   }
 }

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+	<link rel="stylesheet" href="/assets/css/font-awesome.min.css" />
+	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/js/bootstrap.js"></script>
+	<script type="text/javascript" src="/assets/js/angular.min.js"></script>
+	<script type="text/javascript" src="/assets/js/angular-md5.min.js"></script>
+	<script type="text/javascript" src="/assets/js/angular-sanitize.min.js"></script>
+	<script type="text/javascript" src="/js/common.js"></script>
+	<script type="text/javascript" src="/js/layer/layer.js"></script>
+	<script type="text/javascript" src="/assets/js/hotkeys.min.js"></script>
+	<style>
+		.modal-overlay{
+			position: absolute;
+			z-index: 9999;
+			top:0;
+			left:0;
+			width: 100%;
+			height: 100%;
+			background-color: #000;
+			opacity: 0.8;
+		}
+		.modal-background{
+			z-index: 10000;
+			position: absolute;
+			top:50%;
+			left: 50%;
+			transform: translate(-50%,-50%);
+			background-color: #fff;
+		}
+		.modal-content{
+			padding: 10px;
+			text-align: center;
+		}
+		.modal-close{
+			position: absolute;
+			top: 5px;
+			left: 5px;
+			padding: 5px;
+			cursor: pointer;
+			display: inline-block;
+		}
+	</style>
+</head>
+<body >
+	<div class="container" ng-app="App" ng-controller="MainCtrl">
+		<div class="row">
+			<div class="panel panel-info">
+				<div class="panel-heading text-center">
+					<hello-simple-directive />
+				</div>
+				<div class="row">
+					<button ng-click='toggleModal()'>Open Modal</button>
+					 <modal-window show='modalShown' width='400px' height='60%'>
+					 <p>Hello Simple Modal Window</p>
+					 </modal-window>
+				</div>
+				
+			</div>
+		</div>
+		 <script type="text/ng-template" id="modal.html">
+		 <div ng-show='show'>
+		 	<div class='modal-overlay' ng-click='hideModal()'></div>
+		 	<div class='modal-background' ng-style='windowStyle'>
+		 		<div class='modal-close' ng-click='hideModal()'>X</div>
+		 		<div class='modal-content' ng-transclude></div>
+		 	</div>
+		 </div>
+ </script>
+	</div>
+	<script type="text/javascript">
+	var app = angular.module("App",["commonService","ngSanitize","cfp.hotkeys"]);
+	app.directive("helloSimpleDirective",function(httpService,Message){
+		return {
+			scope:true,
+			restrict:'E',
+			replace:true,
+			link:function(){
+				Message.msg("Linking..");
+			},
+			template:'<h3>Hello Simple Directive</h3>'
+		}
+	});
+	app.directive("modalWindow",function(){
+		return {
+			restrict: 'E',
+			scope:{
+				show:'='
+			},
+			replace:true,
+			transclude:true,
+			link:function(scope,element,attrs){
+				scope.windowStyle = {};
+				if (attrs.width){
+					scope.windowStyle.width = attrs.width;
+				}
+				if (attrs.height){
+					scope.windowStyle.height = attrs.height;
+				}
+				scope.hideModal = function(){
+					scope.show = false;
+				}
+			},
+			templateUrl:"modal.html"
+
+		}
+	})
+	app.controller("MainCtrl",function($scope,httpService,$sce,hotkeys,Message,$timeout){
+		$scope.level_name = 'MainCtrol';
+		$scope.modalShown = false;
+		$scope.toggleModal = function(){
+			$scope.modalShown = !$scope.modalShown;
+		}
+	});
+	</script>
+	
+</body>
+</html>

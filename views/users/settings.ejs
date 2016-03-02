@@ -1,0 +1,176 @@
+<% include ../shared/header %>
+<link rel="stylesheet" href="/assets/css/bootstrap-editable.css" />
+
+<div class="page-content" ng-controller="SettingsCtrl">
+	<div class="row">
+		<div class="col-md-4">
+			<!-- PAGE CONTENT BEGINS -->
+			<div class="profile-user-info profile-user-info-striped">
+				<div class="profile-info-row">
+					<div class="profile-info-name"> Username </div>
+
+					<div class="profile-info-value">
+						<span class="editable editable-click" id="username" data-key='<%= user.id %>' ng-bind="user.name"></span>
+					</div>
+				</div>
+
+				<div class="profile-info-row">
+					<div class="profile-info-name"> Email </div>
+
+					<div class="profile-info-value">
+						
+						<span class="editable editable-click" id="email" ng-bind="user.email"></span>
+						
+					</div>
+				</div>
+
+				<div class="profile-info-row">
+					<div class="profile-info-name"> Password </div>
+
+					<div class="profile-info-value">
+						<span class="editable editable-click" id="password" ng-bind="user.password"></span>
+					</div>
+				</div>
+
+				<div class="profile-info-row">
+					<div class="profile-info-name"> Points </div>
+
+					<div class="profile-info-value">
+						<span class="editable editable-click" id="points" ng-bind="user.points"></span>
+					</div>
+				</div>
+
+				<div class="profile-info-row">
+					<div class="profile-info-name"> Last Online </div>
+
+					<div class="profile-info-value">
+						<span class="editable editable-click" id="login">3 hours ago</span>
+					</div>
+				</div>
+
+				<div class="profile-info-row">
+					<div class="profile-info-name"> About Me </div>
+
+					<div class="profile-info-value">
+						<span class="editable editable-click" id="about">Editable as WYSIWYG</span>
+					</div>
+				</div>
+			</div>
+
+		<!-- PAGE CONTENT ENDS -->
+		</div>
+		<div class="col-md-4">
+			<div class="profile-user-info profile-user-info-striped">
+				<div class="profile-info-row">
+				</div>
+			</div>
+		</div>
+	</div>
+</div>	
+<% include ../shared/load_public %>
+<script src="/assets/js/x-editable/bootstrap-editable.min.js"></script>
+<script src="/assets/js/x-editable/ace-editable.min.js"></script>
+
+<script type="text/javascript">
+	angular.module("thoughts_app").controller("SettingsCtrl",function($scope,httpService,hotkeys,Message,userInfo){
+		$scope.user = userInfo.user;
+	});
+</script>	
+<script type="text/javascript">
+			jQuery(function($) {
+			
+				//editables on first profile page
+				$.fn.editable.defaults.mode = 'inline';
+				$.fn.editableform.loading = "<div class='editableform-loading'><i class='light-blue icon-2x icon-spinner icon-spin'></i></div>";
+			    $.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="icon-ok icon-white"></i></button>'+
+			                                '<button type="button" class="btn editable-cancel"><i class="icon-remove"></i></button>';    
+				setTimeout(function(){
+					//editables 
+					var key = $("#username").data("key");
+				    $('#username').editable({
+						type: 'text',
+						pk: key,
+						url:'/users/settings_change',
+						name: 'name',
+						success: function(response, newValue) {
+						
+						}
+				    });	
+				    $('#email').editable({
+						type: 'text',
+						pk: key,
+						url:'/users/settings_change',
+						name: 'email',
+						success: function(response, newValue) {
+							angular.element("#item_title").scope().current.index = newValue;
+							angular.element("#item_title").scope().current.updated_date = Date.now();
+							angular.element("#item_title").scope().$apply();
+						}
+				    });	
+				    $('#password').editable({
+						type: 'text',
+						pk: key,
+						url:'/users/settings_change',
+						name: 'password',																		
+						success: function(response, newValue) {
+							
+							angular.element("#item_title").scope().current.description = newValue;
+							angular.element("#item_title").scope().current.updated_date = Date.now();
+							angular.element("#item_title").scope().$apply();
+						}
+				    });
+				    $('#points').editable({
+						type: 'text',
+						pk: key,
+						url:'/users/settings_change',
+						name: 'points',																		
+						success: function(response, newValue) {
+							
+							angular.element("#item_title").scope().current.description = newValue;
+							angular.element("#item_title").scope().current.updated_date = Date.now();
+							angular.element("#item_title").scope().$apply();
+						}
+				    });
+				    $(":file").change(function(){
+				    	var file = this.files[0];
+				    	if (file){
+				    		//console.log(file);
+				    		//$(this).closest("form").submit();
+				    		var formData = new FormData($(this).closest("form")[0]);
+				    		var index = layer.load();
+						 	$.ajax({
+						 		url:"/posts/upload_file",
+						 		dataType:'json',
+						 		crossDomain:true,
+						 		jsonp:false,
+						 		type:'POST',
+						 		success:function(json){
+						 			layer.close(index);
+						 			if(json.status){	 				
+						 				angular.element("#item_title").scope().current.attachments = json.result;
+						 				angular.element("#item_title").scope().$apply();
+						 			}else{
+						 				
+						 			}
+						 			
+						 		},
+						 		error:function(r){
+						 			
+						 		},
+						 		data:formData,
+						 		cache:false,
+						 		contentType:false,
+						 		processData:false
+						 		
+						 	});
+				    	}
+				    });		
+				   
+				},500);
+				
+			});
+</script>				
+
+
+		
+<% include ../shared/footer %>

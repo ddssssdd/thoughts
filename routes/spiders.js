@@ -24,6 +24,7 @@ router.get("/add",function(req,res){
 	
 	
 });
+
 router.post("/add_book",function(req,res){
 	//res.json(req.body);
 	var m = require("mongoose");
@@ -117,10 +118,49 @@ router.post("/update_book",function(req,res){
 });
 
 router.get("/test",function(req,res){
+	/*
 	schedule_update(function(data){
 		res.json(data);
 	})
+*/
+	var parser = require("rss-parser");
+	var url = 'http://rss.cnbeta.com/rss';
+	//var url = 'http://feed.cnblogs.com/blog/sitehome/rss';
+
+	//url = 'http://rss.sina.com.cn/news/world/focus15.xml';
+	//url = 'http://rss.sina.com.cn/news/society/focus15.xml';
+	//url = 'http://rss.sina.com.cn/tech/rollnews.xml';
+	parser.parseURL(url,function(err,ele){
+		if (err){
+			res.json({status:false,err:err});			
+		}else{
+			var m = require("mongoose");
+			var Sites = m.model("feed_sites");
+			
+			Sites.add('sina',url,function(err,site){
+				if (err){
+					res.json({status:false});
+				}else{
+					ele.feed.entries.forEach(function(entry){
+						Sites.feed(site,entry,function(err,item){
+							console.log(item);
+						})
+					})
+				}
+			})
+
+			res.json(ele);			
+		}
+		
+	});
 });
+router.get("/test_list",function(req,res){
+	var m = require("mongoose");
+	var Sites = m.model("feed_sites");
+	Sites.list(function(err,items){
+		res.json(items);
+	})
+})
 
 module.exports = router;
 

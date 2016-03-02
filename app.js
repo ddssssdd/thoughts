@@ -98,6 +98,8 @@ app.use("/spiders",require("./routes/spiders"));
 app.use("/bing", require("./routes/bing.js"));
 app.use("/admin", require("./routes/admin.js"));
 
+app.use("/test", require("./test/route.js"));
+
 app.listen(process.env.PORT || config.app, function () {
   console.log('Website <<Thoughts>> listening on port ' + (process.env.PORT || config.app));
 });

@@ -100,7 +100,7 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 				}/*else if (success){
 					success(this.result);
 				}*/
-				logger.log("Get ["+url+"] from cache");
+				//logger.log("Get ["+url+"] from cache");
 			}	
 		}catch(error){
 			logger.log("Failed to get value from localstorage. Error: "+error);
@@ -110,11 +110,14 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 			Message.close(handler);
 			try{
 				localStorage.setItem(cacheKey,(JSON.stringify(json)));	
+				logger.log("http post: "+ url );
+				/*
 				logger.log("Write ["+url+"] result to cache");
 				logger.log("Parameters:");
 				logger.log(parameter);
 				logger.log("Return:");
 				logger.log(json);
+				*/
 			}catch(error){
 				localStorage.clear();
 				logger.log("Failed to write value to localstorage. Error: "+error);

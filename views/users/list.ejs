@@ -16,15 +16,15 @@
 		</tr>
 	</thead>
 	<tbody>
-		<% for(var i=0;i<users.length;i++){ var user = users[i]; %>
+		<% for(var i=0;i<users.length;i++){ var item = users[i]; %>
 		<tr>
-			<td> <%= user.name %> </td>
-			<td> <%= user.email %> </td>
-			<td> <%= user.password %> </td>
-			<td> <%= user.points %> </td>
+			<td> <%= item.name %> </td>
+			<td> <%= item.email %> </td>
+			<td> <%= item.password %> </td>
+			<td> <%= item.points %> </td>
 			<td>
-				<a class="btn" href="edit/<%= user.id %>">Edit </a>
-				<a class="btn" href="remove/<%= user.id %>">Remove </a>
+				<a class="btn" href="edit/<%= item.id %>">Edit </a>
+				<a class="btn" href="remove/<%= item.id %>">Remove </a>
 			</td>
 		</tr>
 		<% } %>

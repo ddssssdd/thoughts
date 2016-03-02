@@ -3,7 +3,7 @@ var router = express.Router();
 
 
 router.use(function(req,res,next){
-	console.log(req.url);
+	//console.log(req.url);
 	
 	//if (["/login","/logout","/info"].indexOf(req.url.toLowerCase())>-1){
 
@@ -17,17 +17,17 @@ router.use(function(req,res,next){
 		return false;
 	}		
 	res.locals.base_url =  req.protocol +"://"+req.headers.host;
-	if (skipped(req.url.toLowerCase())){	
-		res.locals.user = {id:0,name:"Unknown"};
-		res.locals.is_login = false;	
+	res.locals.user = {id:0,name:"Unknown"};
+	res.locals.is_login = false;
+	if (skipped(req.url.toLowerCase())){				
 		next();
 	}else if (req.session.is_login){
+
 		res.locals.user = req.session.user;
 		res.locals.is_login = true;
+		console.log(res.locals);
 		next();
-	}else{
-		res.locals.user = {id:0,name:"Unknown"};
-		res.locals.is_login = false;
+	}else{		
 		res.redirect("/users/login?url="+req.originalUrl);
 	}
 });
@@ -46,21 +46,6 @@ router.get("/logs",function(req,res){
 		//res.json(data);
 		res.render("users/logs",{logs:data});
 	});
-	
-	/*
-	UserLog.log(req.session.user,"Test new",function(err,log){
-		
-		console.log(err);
-		res.json(log);
-	})
-	*/
-	/*
-	var userlog = new UserLog({content:"test2222",user:req.session.user});
-	userlog.save(function(err,result){
-		console.log(result);
-		//res.json(result);
-	});
-	*/
 });
 router.get("/index",function(req,res){
 	res.render("users/index",{user:{}});
@@ -106,7 +91,7 @@ router.get("/remove/:id",function(req,res){
 });
 router.post("/info",function(req,res){
 	var user_model = require("mongoose").model("users");
-	user_model.findOne({_id:req.session.user},function(err,user){
+	user_model.findOne({_id:req.session.user.id},function(err,user){
 		//res.json({result:user,error:err,param:{_id:req.params.id}});
 		if (user){
 			res.json({status:true,result:user});	
@@ -128,11 +113,15 @@ router.post("/login",function(req,res){
 		return;
 	}
 	var user_model = require("mongoose").model("users");
-	user_model.findOne({name:req.body.username},function(err,user){
+	user_model.findOne({name:req.body.username}).lean().exec(function(err,user){
 		
 		if (user){			
 			req.session.is_login = true;
-			req.session.user = {id:user.id,name:user.name,email:user.email};				
+			user.avatar = user.avatar || '/assets/avatars/face-ico.png';
+			user.id = user._id;
+			req.session.user = user;// {id:user.id,name:user.name,email:user.email,avatar:(user.avatar || '/assets/avatars/face-ico.png')};	
+			
+			
 		}
 		var url = req.body.return_url || "/index";
 		res.redirect(url);
@@ -143,4 +132,14 @@ router.get("/logout",function(req,res){
 	delete req.session.user;
 	res.redirect("/index");
 });
+
+
+router.get("/settings",function(req,res){	
+	res.render("users/settings");
+});
+
+router.get("/profile",function(req,res){	
+	res.render("users/profile");
+});
+
 module.exports = router;

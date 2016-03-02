@@ -4,18 +4,18 @@
 
 </div><!-- /.main-container -->
 <script>
-
-angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService,hotkeys){
-	//$scope.is_login = UserService.is_login();
-	//$scope.user = UserService.user();
-	/*
-	UserService(function(user,is_login){
-		$scope.is_login = UserService.is_login;
-		$scope.user = UserService.user;
+angular.module("thoughts_app").service("userInfo",function(){
+	console.log("Get user informaion once;")
+	return {
+		is_login:<%= is_login %>,
 		
-	})*/
-	$scope.is_login = <%= is_login %>;
-	$scope.user = {id:'<%= user.id %>',name:'<%= user.name %>'};  
+		user: {id:'<%= user.id %>',name:'<%= user.name %>',email:'<%= user.email%>',avatar:'<%= user.avatar %>',password:'<%= user.password %>',points:<%= user.points || 0 %>}
+	}
+})
+angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService,hotkeys,userInfo){
+	
+	$scope.is_login =userInfo.is_login;
+	$scope.user = userInfo.user;  
 	$scope.logout = function(event){
 		event.stopPropagation();
 		window.location = "/users/logout";

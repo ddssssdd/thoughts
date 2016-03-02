@@ -5,7 +5,8 @@ var userSchema = {
 	email:String,
 	password:String,
 	last_login:Date,
-	points:Number
+	points:Number,
+	avatar:String
 }
 users = mongoose.model("users",userSchema);
 module.exports = users;
