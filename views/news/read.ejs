@@ -5,16 +5,14 @@
 	<div class="row">
 		<div class="col-md-12">
 			<!-- PAGE CONTENT BEGINS -->
-			<div class="col-md-9">
-				<ul class="list-group">
-				    <li class="list-group-item" ng-repeat="item in news" ng-click="open_item(item,$event);">				    	
-				    	<a ng-href="{{item.link}}" target="_blank"><h3 ng-bind="item.title"> </h3></a> 					    				    	
-				    	<p ng-bind="item.content"></p>				    	
-				    	<h5 class="text-right red"> {{item.site.name}}  {{item.pubDate | timeFormat}}</h5>
-				    </li>
-			    
-		  		</ul>
-			</div>
+			<ul class="list-group">
+			    <li class="list-group-item" ng-repeat="item in news" >				    	
+			    	<a ng-href="{{item.link}}" target="_blank"><h4 ng-bind="item.title"> </h4></a> 					    				    	
+			    	<p ng-bind="item.content" ng-click="open_item(item,$event);"></p>				    	
+			    	<h5 class="text-right red"> {{item.site.name}}  {{item.pubDate | timeFormat}}</h5>
+			    </li>
+		    
+	  		</ul>
 			
 
 			<!-- PAGE CONTENT ENDS -->
