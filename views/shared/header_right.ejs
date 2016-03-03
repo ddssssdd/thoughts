@@ -43,62 +43,23 @@
 			<li class="purple">
 				<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 					<i class="icon-bell-alt icon-animated-bell"></i>
-					<span class="badge badge-important">8</span>
+					<span class="badge badge-important">{{news.length}}</span>
 				</a>
 
-				<ul class="pull-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
-					<li class="dropdown-header">
-						<i class="icon-warning-sign"></i>
-						8条通知
-					</li>
-
-					<li>
-						<a href="#">
-							<div class="clearfix">
-								<span class="pull-left">
-									<i class="btn btn-xs no-hover btn-pink icon-comment"></i>
-									新闻评论
-								</span>
-								<span class="pull-right badge badge-info">+12</span>
-							</div>
+				<ul class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close" style="height:400px;width:350px;overflow:scroll;overflow-x:hidden;">
+					<li class="dropdown-header text-center">
+						<a href="/news/read">
+						{{news.length}} news
 						</a>
 					</li>
 
-					<li>
-						<a href="#">
-							<i class="btn btn-xs btn-primary icon-user"></i>
-							切换为编辑登录..
-						</a>
+					<li ng-repeat="item in news" style="width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+						<a ng-href="{{item.link}}" ng-bind="item.title" target="_blank" data-toggle='tooltip' title="{{item.content}}" data-html="true"></a>
 					</li>
 
 					<li>
-						<a href="#">
-							<div class="clearfix">
-								<span class="pull-left">
-									<i class="btn btn-xs no-hover btn-success icon-shopping-cart"></i>
-									新订单
-								</span>
-								<span class="pull-right badge badge-success">+8</span>
-							</div>
-						</a>
-					</li>
-
-					<li>
-						<a href="#">
-							<div class="clearfix">
-								<span class="pull-left">
-									<i class="btn btn-xs no-hover btn-info icon-twitter"></i>
-									粉丝
-								</span>
-								<span class="pull-right badge badge-info">+11</span>
-							</div>
-						</a>
-					</li>
-
-					<li>
-						<a href="#">
-							查看所有通知
-							<i class="icon-arrow-right"></i>
+						<a href="/news/read">
+							All News
 						</a>
 					</li>
 				</ul>
@@ -107,69 +68,37 @@
 			<li class="green">
 				<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 					<i class="icon-envelope icon-animated-vertical"></i>
-					<span class="badge badge-success">5</span>
+					<span class="badge badge-success">{{posts.length}}</span>
 				</a>
 
 				<ul class="pull-right dropdown-navbar dropdown-menu dropdown-caret dropdown-close">
 					<li class="dropdown-header">
 						<i class="icon-envelope-alt"></i>
-						5条消息
+						{{posts.length}} posts
 					</li>
 
-					<li>
+					<li ng-repeat="post in posts">
 						<a href="#">
-							<img src="/assets/avatars/avatar.png" class="msg-photo" alt="Alex's Avatar" />
+							<img ng-src="{{ post.user.avatar?post.user.avatar:'/assets/avatars/face-ico.png'}}" class="msg-photo" alt="user's Avatar" />
 							<span class="msg-body">
 								<span class="msg-title">
-									<span class="blue">Alex:</span>
-									不知道写啥 ...
+									<span class="blue" ng-bind="post.user.name"></span>
+									{{post.content}}
 								</span>
 
 								<span class="msg-time">
 									<i class="icon-time"></i>
-									<span>1分钟以前</span>
+									<span>{{post.created_date | date }}</span>
 								</span>
 							</span>
 						</a>
 					</li>
 
-					<li>
-						<a href="#">
-							<img src="/assets/avatars/avatar3.png" class="msg-photo" alt="Susan's Avatar" />
-							<span class="msg-body">
-								<span class="msg-title">
-									<span class="blue">Susan:</span>
-									不知道翻译...
-								</span>
-
-								<span class="msg-time">
-									<i class="icon-time"></i>
-									<span>20分钟以前</span>
-								</span>
-							</span>
-						</a>
-					</li>
+					
 
 					<li>
-						<a href="#">
-							<img src="/assets/avatars/avatar4.png" class="msg-photo" alt="Bob's Avatar" />
-							<span class="msg-body">
-								<span class="msg-title">
-									<span class="blue">Bob:</span>
-									到底是不是英文 ...
-								</span>
-
-								<span class="msg-time">
-									<i class="icon-time"></i>
-									<span>下午3:15</span>
-								</span>
-							</span>
-						</a>
-					</li>
-
-					<li>
-						<a href="inbox.html">
-							查看所有消息
+						<a href="/posts/list">
+							Check All Posts
 							<i class="icon-arrow-right"></i>
 						</a>
 					</li>

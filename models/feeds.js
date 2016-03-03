@@ -67,7 +67,7 @@ siteSchema.statics.feed = function(site,entry,callback){
 	);
 }
 siteSchema.statics.list = function(callback){
-	Feed.find().lean().populate("site").exec(callback);
+	Feed.find().lean().populate("site").sort({pubDate:-1}).exec(callback);
 }
 siteSchema.statics.sites = function(callback){
 	Site.find().lean().exec(callback);

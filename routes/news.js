@@ -9,7 +9,12 @@ router.get("/index",function(req,res){
 	res.render("news/index");
 });
 
-
+router.get("/read",function(req,res){
+	require("../common/spider").update_feeds(function(results){
+		res.render("news/read");	
+	});
+	
+});
 
 router.post("/sites",function(req,res){
 	var m = require("mongoose");
@@ -31,6 +36,14 @@ router.post("/remove_site",function(req,res){
 	Site.remove_site(req.body.id,function(err,sites){
 		res.json({status:err?false:true,result:sites});
 	});
-})
+});
+router.post("/news",function(err,res){
+	var m = require("mongoose");
+	m.model("feed_sites").list(function(err,news){
+		res.json({status:err?false:true,result:news});
+	})
+});
+
+
 
 module.exports = router;

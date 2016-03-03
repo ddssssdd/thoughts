@@ -29,6 +29,22 @@ angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpServic
 			httpService(url,{},function(json){
 				$scope.projects = json;
 			});
+			url = "/news/news";
+			httpService(url,{},function(json){
+				if (json.status){
+					$scope.news = json.result;	
+				}else{
+					$scope.news =[];
+				}
+				
+			});
+			httpService("/posts/list",{},function(json){
+				if (json.status){
+					$scope.posts = json.result;
+				}else{
+					$scope.posts =[];
+				}
+			})
 		}
 		angular.element("#top_right_area").show();
 	}
@@ -55,33 +71,6 @@ angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpServic
 	})
 
 });	
-/*
-angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService){
-	$scope.user =null;
-	$scope.is_login = false;
-	$scope.load_data = function(){
-		var url ="/users/info";
-		httpService(url,{},function(json){
-			if (json.status){
-				$scope.is_login = true;
-				$scope.user = json.result;
-			}else{
-				$scope.is_login = false;
-				$scope.user = null;
-			}
-
-			console.log(json);
-		},null);
-	}
-	$scope.load_data();
-	$scope.logout = function(event){
-		event.stopPropagation();
-		window.location = "/users/logout";
-	}
-	$scope.login = function(event){
-		window.location = "/users/login";
-	}
-});	*/
 </script>
 
 	<!--          This is footor of html body -->

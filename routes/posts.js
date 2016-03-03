@@ -72,6 +72,14 @@ router.get("/list",function(req,res){
 		res.render("posts/list",{posts:posts});
 	});
 });
+router.post("/list",function(req,res){
+	
+	var post_model = require("mongoose").model("posts");
+	post_model.find({}).populate("user").exec(function(err,posts){
+		//res.json(posts);
+		res.json({status:err?false:true,result:posts});
+	});
+});
 
 router.get("/attach_list",function(req,res){
 	

@@ -17,7 +17,7 @@ var Auto_update = function(config){
         var b = book_result[i];
         result.push(b.book.title+'--'+b.title);
       };
-      var email = {to:"a060116@163.com",subject:"subject",html:result.join(";"),attachments:[]};
+      var email = {to:"a060116@163.com",subject:"subject",html:result.join("; "),attachments:[]};
         require("../common/email").send_and_call(null,email,function(err,info){
           console.log(info);
       });
@@ -82,13 +82,13 @@ var schedule_update = function(book_result,callback){
                 var verifyAndUpdate = function (book,item_url,item_title,index){
                   Items.findOne({book_id:book,url:item_url},function(err,book_chapter){
                     if (!err && book_chapter){
-                      console.log(book_chapter.title);
+                      //console.log(book_chapter.title);
                       //book_result.push({has:true,title:book_chapter.title});
 
                     }else{                  
                       update_book(book,index,item_url,item_title);                                        
                       book_result.push({book:book,index:index,title:item_title});
-                      console.log("Added ..............................." +item_title);
+                      //console.log("Added ..............................." +item_title);
                     }
               
                   }); 
@@ -108,7 +108,7 @@ var schedule_update = function(book_result,callback){
       }
       Promise.all(arr)
       .then(function(data){
-          console.log(data);
+          //console.log(data);
           callback(data);
         },function(errors){
           console.log(errors);
