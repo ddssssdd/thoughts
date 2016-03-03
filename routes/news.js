@@ -10,10 +10,13 @@ router.get("/index",function(req,res){
 });
 
 router.get("/read",function(req,res){
-	require("../common/spider").update_feeds(function(results){
-		res.render("news/read");	
-	});
+	res.render("news/read");	
 	
+});
+router.post("/refresh",function(req,res){
+	require("../common/spider").update_feeds(function(results){
+		res.json({status:true});
+	});
 });
 
 router.post("/sites",function(req,res){

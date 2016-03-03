@@ -40,6 +40,49 @@ siteSchema.statics.add = function(name,url,callback){
 	);
 }
 siteSchema.statics.remove_site = function(site,callback){
+	var Promise = require("promise");
+	var remove_detail = function(site){
+		console.log("Delete the feed_items");
+		return new Promise(function(resolve,reject){
+			Feed.remove({site:site},function(err,raw){
+				if (err){
+					reject(err);
+				}else{
+					resolve(site);
+				}
+			})
+		});
+	}
+	var remove_site = function(site){
+		console.log("Delete the site");
+		return new Promise(function(resolve,reject){
+			Site.remove({_id:site},function(err,raw){
+				if (err){
+					reject(err);
+				}else{
+					resolve(site);
+				}	
+			})
+		})
+	}
+	var get_sites = function(site){
+		console.log("fetch results");
+		return new Promise(function(resolve,reject){
+			Site.find().lean().exec(function(err,items){
+				err ? reject(err) : resolve(items);
+			})
+		})
+	}
+	remove_detail(site)
+	.then(remove_site)
+	.then(get_sites)
+	.then(function(items){
+		callback ? callback(null,items):null;
+	})
+	.catch(function(err){
+		err? callback(err,[]): null;
+	})
+	/*
 	Site.remove({_id:site}).exec(function(err,raw){
 		if (!err){
 			Site.find().lean().exec(function(err,sites){
@@ -52,7 +95,8 @@ siteSchema.statics.remove_site = function(site,callback){
 		}else{
 			if (callback) callback(err,null);
 		}
-	})
+	})*/
+
 }
 siteSchema.statics.feed = function(site,entry,callback){
 	var item = { site:site, title:entry.title, link:entry.link, pubDate:entry.pubDate,
