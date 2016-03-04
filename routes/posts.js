@@ -61,7 +61,7 @@ router.get("/",function(req,res){
 router.get("/index",function(req,res){
 	
 	//console.log(req.app.config);
-	res.render("posts/index",{post:{},attachments:[]});
+	res.render("posts/index",{post_id:'0'});
 });
 
 router.get("/list",function(req,res){
@@ -204,14 +204,22 @@ router.post("/add", multipartMiddleware,function(req,res){
 	
 });
 router.get("/edit/:id",function(req,res){
+	res.render("posts/index",{post_id:req.params.id});
+});
+router.post("/edit",function(req,res){
 	var m = require("mongoose");
 	var post_model = m.model("posts");
-	post_model.findOne({_id:req.params.id},function(err,post){
+	post_model.findOne({_id:req.body.id}).lean().exec(function(err,post){
 		
 		var attachments = m.model("attachments");	
-		attachments.find({ownerId:req.params.id}).populate("fileId").exec(function(err,items){			
-			//res.json("posts/index",{post:post,attachments:items});
-			res.render("posts/index",{post:post,attachments:items});
+		attachments.find({ownerId:req.body.id}).lean().populate("fileId").exec(function(err,items){			
+			res.json({post:post,attachments:items});
+			
+			/*res.render("posts/index",{post:post,
+				attachments:items,
+				post_s:JSON.stringify(post),
+				attachments_s:JSON.stringify(items)});
+			*/
 		});	
 		
 	})
@@ -253,6 +261,13 @@ router.get("/remove/:id",function(req,res){
 	var post_model = require("mongoose").model("posts");
 	post_model.findOneAndRemove({_id:req.params.id},function(err,post){		
 		res.redirect("/posts/list");
+	});
+});
+router.post("/attachment_delete",function(req,res){
+	
+	var attachments = require("mongoose").model("attachments");
+	attachments.remove({_id:req.body.id},function(err,attachments){
+		res.json({status:err?false:true});		
 	});
 });
 module.exports = router;

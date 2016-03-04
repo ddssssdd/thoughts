@@ -166,7 +166,88 @@ angular.module("commonService",["ngMd5"], function($httpProvider) { //fix angula
 	return function(d){
 		return timeDifference(Date.now(),Date.parse(d));
 	}
-});
+})
+.service("Pagination",function(httpService){
+	var Pagination = function(url,parameter,callback){
+		var self = this;
+		this.url = url;
+		this.results = [];
+		this.parameter = parameter || {};
+		this.pageSize = 20;
+		this.pagination = {index:0, loading:false, has_next:true};
+		this.callback = callback;
+		this.scroll_on_elelment = false;
+		this.load_data = function(){
+			if (self.pagination.loading){
+				return;
+			}
+			if (!self.pagination.has_next){
+				return;
+			}
+			self.pagination.index ++;
+			self.pagination.loading = true;
+			self.parameter.index = self.pagination.index;
+			self.parameter.size = self.pageSize;
+			httpService(self.url,self.parameter,function(json){
+				self.pagination.loading = false;
+				if (json.result.length==0){	
+					self.pagination.has_next = false;
+				}else{
+					self.results = self.results.concat(json.result);	
+					if (self.callback){
+						self.callback(self.results);
+					}
+				}
+				
+			})	
+			return self;
+		}
+		this.reset = function(reload){
+			self.results =[];
+			self.pagination = {index:0, size:20, loading:false, has_next:true};			
+			if (reload){
+				self.load_data();
+			}
+			return self;
+		}
+		this.page_size = function(value){
+			self.pageSize = value;
+			return self;
+		}
+		this.need_more = function(){
+			self.load_data();
+		}
+		this.on_scroll = function(selector,scroll_element){
+			self.scroll_on_elelment = true;
+			var main = $(selector);			
+			scroll_element = scroll_element || 'li';
+			main.scroll(function(){
+				var obj = this;
+				if ($(obj).find(scroll_element+ ":visible").length==0){
+	       			return;
+	      		}	
+				var last_scrolltop = $(obj).find(scroll_element+ ":visible").last().offset().top - $(obj).offset().top;
+				var h = $(obj).height();
+				var diff = h - last_scrolltop;			
+				if (diff >0 ){
+					self.need_more();
+				}
+			});
+			return self;
+		}
+		window.onscroll = function(ev) {
+    		if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        		// you're at the bottom of the page  
+        		if (!self.scroll_on_elelment){      		
+        			self.need_more();
+        		}
+    		}
+		};
+		
+
+	}
+	return Pagination;
+})
 
 
 function timeDifference(current, previous) {

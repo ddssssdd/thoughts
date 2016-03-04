@@ -12,7 +12,7 @@ angular.module("thoughts_app").service("userInfo",function(){
 		user: {id:'<%= user.id %>',name:'<%= user.name %>',email:'<%= user.email%>',avatar:'<%= user.avatar %>',password:'<%= user.password %>',points:<%= user.points || 0 %>}
 	}
 })
-angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService,hotkeys,userInfo){
+angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpService,hotkeys,userInfo,Pagination){
 	
 	$scope.is_login =userInfo.is_login;
 	$scope.user = userInfo.user;  
@@ -28,23 +28,20 @@ angular.module("thoughts_app").controller("LoginCtrl",function($scope,httpServic
 			var url = "/projects/list";
 			httpService(url,{},function(json){
 				$scope.projects = json;
-			});
-			url = "/news/news";
-			httpService(url,{},function(json){
-				if (json.status){
-					$scope.news = json.result;	
-				}else{
-					$scope.news =[];
-				}
-				
-			});
+			});			
 			httpService("/posts/list",{},function(json){
 				if (json.status){
 					$scope.posts = json.result;
 				}else{
 					$scope.posts =[];
 				}
+			});
+			new Pagination("/news/news",{},function(items){
+				$scope.news = items;
 			})
+			.page_size(10)
+			.on_scroll("#ul_news_in_top_right")
+			.load_data();
 		}
 		angular.element("#top_right_area").show();
 	}

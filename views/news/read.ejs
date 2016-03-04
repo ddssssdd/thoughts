@@ -11,7 +11,7 @@
 			<ul class="list-group">
 			    <li class="list-group-item" ng-repeat="item in news" >				    	
 			    	<a ng-href="{{item.link}}" target="_blank"><h4 ng-bind="item.title"> </h4></a> 					    				    	
-			    	<p ng-bind="item.content" ng-click="open_item(item,$event);"></p>				    	
+			    	<p ng-bind-html="html(item.content)" ng-click="open_item(item,$event);"></p>				    	
 			    	<h5 class="text-right red"> {{item.site.name}}  {{item.pubDate | timeFormat}}</h5>
 			    </li>
 		    
@@ -28,21 +28,23 @@
 <script src="/assets/js/x-editable/ace-editable.min.js"></script>
 
 <script type="text/javascript">
-	angular.module("thoughts_app").controller("NewsCtrl",function($scope,httpService,hotkeys,Message,userInfo){
+	angular.module("thoughts_app").controller("NewsCtrl",function($scope,$sce,httpService,hotkeys,Message,userInfo,Pagination){
 		$scope.user = userInfo.user;
+
+		$scope.pagination = new Pagination("/news/news",null, function(items){
+											$scope.news = items;
+							})							
+							.page_size(30)
+							.load_data();
+
 		
-		$scope.news = [];
-		$scope.load_data = function(){
-			httpService("/news/news",{},function(json){
-				$scope.news = json.result;
-			})	
-		}
+
 		$scope.refresh_news = function(event){
 			httpService("/news/refresh",{},function(json){
-				$scope.load_data();
+				$scope.pagination.reset(true);				
 			})		
 		}
-		$scope.load_data();
+		//$scope.load_data();
 		$scope.open_item = function(item, event){
 			
 			var index = layer.open({
@@ -54,7 +56,11 @@
 			});
 			//layer.full(index);
 		}
-	})
+		$scope.html = function(source){
+			return $sce.trustAsHtml(source);
+		}
+	});
+	
 	
 </script>	
 		

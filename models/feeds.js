@@ -110,8 +110,15 @@ siteSchema.statics.feed = function(site,entry,callback){
 		}
 	);
 }
-siteSchema.statics.list = function(callback){
-	Feed.find().lean().populate("site").sort({pubDate:-1}).exec(callback);
+siteSchema.statics.list = function(page,size,callback){
+	debugger;
+	page = parseInt( page || 1 );
+	size = parseInt( size || 10 );
+	Feed.find().lean().populate("site")
+		.sort({pubDate:-1})
+		.skip((page-1)*size)
+		.limit(size)
+		.exec(callback);
 }
 siteSchema.statics.sites = function(callback){
 	Site.find().lean().exec(callback);

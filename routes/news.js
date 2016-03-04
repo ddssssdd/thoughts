@@ -40,9 +40,9 @@ router.post("/remove_site",function(req,res){
 		res.json({status:err?false:true,result:sites});
 	});
 });
-router.post("/news",function(err,res){
+router.post("/news",function(req,res){
 	var m = require("mongoose");
-	m.model("feed_sites").list(function(err,news){
+	m.model("feed_sites").list(req.body.index || 1, req.body.size || 20,function(err,news){
 		res.json({status:err?false:true,result:news});
 	})
 });

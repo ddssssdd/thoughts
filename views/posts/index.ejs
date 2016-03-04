@@ -1,4 +1,6 @@
 <% include ../shared/header %>
+
+<script src="http://cdn.ckeditor.com/4.5.7/standard-all/ckeditor.js"></script>
 <div class="page-content">
 <!-- div class="page-header">
 	<h1>Posts
@@ -10,45 +12,61 @@
 			<!-- PAGE CONTENT BEGINS -->
 
 			<div  ng-controller="PostCtrl">
+
 				<form action="/posts/add" method="POST" enctype='multipart/form-data' id="edit_form">
-					<input type="hidden" name="id" value="<%= post.id %>"/>
-					<textarea type="text" name="content" width="100%" placeholder="content"><%= post.content %></textarea>
+					<div class="row-fluild  text-right">
+						<div class="btn-group tool-bar">
+							<button class="btn btn-sm btn-success" type="submit">
+								<i class="icon-ok"></i>
+								{{post_id=='0'?'Add':'Update'}}
+							</button>
+						</div>						
+					</div>
+					<br/>
+					<input type="hidden" name="id" value = "{{post._id}}" />
+					<textarea type="text" name="content" id="editor" width="100%" placeholder="content" ng-model="post.content"></textarea>
 					<input type="file" name="file"/>
-					<input type="file" name="file2"/>
-					<input type="submit" value="<%= post.id?'Update':'Add' %>"/>
-						<div class="dropdown">
-							<a class="dropdown-toggle my-toggle-select" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
-							<div class="input-append">
-								<input type="text" class="input-large" data-ng-model="data.test">
-								<span class="add-on"><i class="icon-calendar"></i></span>
-							</div>
-							</a>
-							<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-								<datetimepicker data-ng-model="data.test"
-			        				data-datetimepicker-config="{ dropdownSelector: '.my-toggle-select' }"></datetimepicker>
-							</ul>
-						</div>
+					<input type="file" name="file2"/>					
+						
 				</form>
 				<br />
-				<ul>
-				<% if (attachments) { %>
-					<% attachments.forEach(function(item){ %>
-						<li> <img src="<%= item.fileId.link %>" width="200px" height="160px" id="<%= item.fileId.id %>"/> </li>
-						
-					<% }); %>
-				<% } %>
-				</ul>
-				<ul id="edpen_img" style="background:white;">
-				</ul>
-				<br/>
-				<br/><br/>
-				<div id="dropzone">
-					<form action="//dummy.html" class="dropzone">
-						<div class="fallback">
-							<input name="file" type="file" multiple="" />
-						</div>
-					</form>
+				<div class="row-fluid">
+					<div class = "panel">
+					<ul class="ace-thumbnails" id="contactList">
+						<li ng-repeat="item in attachments"> 
+							<a ng-href="{{item.fileId.link}}" data-rel='colorbox' class='cboxElement'>
+								<img ng-src="{{item.fileId.link}}"  height="150px"/> 
+								<div class="text">
+									<div class="inner" ng-bind="item.fileId.filename">
+										
+									</div>
+								</div>
+							</a>
+							<div class="tools tools-bottom">
+								<a href="javascript:void(0)" ng-click="attach_link(item,$event)">
+									<i class="icon-link"></i>
+								</a>
+
+								<a href="javascript:void(0)" ng-click="attach_remove(item,$event)">
+									<i class="icon-remove red"></i>
+								</a>
+
+								<a href="#">
+									<i class="icon-paper-clip"></i>
+								</a>
+
+								<a href="#">
+									<i class="icon-pencil"></i>
+								</a>
+
+							</div>
+						</li>
+					</ul>
 				</div>
+				</div>
+				
+				
+				
 			</div><!-- /.main-content -->
 
 			<!-- PAGE CONTENT ENDS -->
@@ -60,45 +78,48 @@
 
 <% include ../shared/load_public %>
 
-<script type="text/javascript">
-	<script type="text/javascript">
-			jQuery(function($){
-			
-			try {
-			  $(".dropzone").dropzone({
-			    paramName: "file", // The name that will be used to transfer the file
-			    maxFilesize: 0.5, // MB
-			  
-				addRemoveLinks : true,
-				dictDefaultMessage :
-				'<span class="bigger-150 bolder"><i class="icon-caret-right red"></i> Drop files</span> to upload \
-				<span class="smaller-80 grey">(or click)</span> <br /> \
-				<i class="upload-icon icon-cloud-upload blue icon-3x"></i>'
-			,
-				dictResponseError: 'Error while uploading file!',
-				
-				//change the previewTemplate to use Bootstrap progress bars
-				previewTemplate: "<div class=\"dz-preview dz-file-preview\">\n  <div class=\"dz-details\">\n    <div class=\"dz-filename\"><span data-dz-name></span></div>\n    <div class=\"dz-size\" data-dz-size></div>\n    <img data-dz-thumbnail />\n  </div>\n  <div class=\"progress progress-small progress-striped active\"><div class=\"progress-bar progress-bar-success\" data-dz-uploadprogress></div></div>\n  <div class=\"dz-success-mark\"><span></span></div>\n  <div class=\"dz-error-mark\"><span></span></div>\n  <div class=\"dz-error-message\"><span data-dz-errormessage></span></div>\n</div>"
-			  });
-			} catch(e) {
-			  alert('Dropzone.js does not support older browsers!');
-			}
-			
-			});
-		</script>
-</script>
+<link rel="stylesheet" href="/assets/css/colorbox.css" />
+
+<script src="/assets/js/jquery.colorbox-min.js"></script>
+
+<!-- ace scripts -->
+
+<script src="/assets/js/ace-elements.min.js"></script>
+<script src="/assets/js/ace.min.js"></script>
+
+
 <script>
 	
-	angular.module("thoughts_app").controller("PostCtrl",function($scope,httpService,hotkeys){
-		$scope.data = {test:'2016-1-15 12:30:43'};
-		hotkeys.bindTo($scope)
-		.add({
-			combo:'ctrl+v',
-			description:'Ctrl + V to upload photo',
-			callback:function(){
-				console.log("Paste...");
+	angular.module("thoughts_app").controller("PostCtrl",function($scope,httpService,Message,userInfo){		
+		$scope.post = {content:''}
+		$scope.attachments = [];
+		$scope.post_id = "<%= post_id %>";
+		$scope.load_data = function(){
+			httpService("/posts/edit",{id:$scope.post_id},function(json){
+				$scope.post = json.post;
+				$scope.attachments = json.attachments;
+			})
+		}
+		if ($scope.post_id!='0'){
+			$scope.load_data();		
+		}
+		$scope.attach_link = function(item,event){
+
+		}
+		$scope.attach_remove = function(item,event){
+			if (!item._id){
+				var index = $scope.attachments.indexOf(item);
+				$scope.attachments.splice(index,1);
+				return;
 			}
-		})
+			Message.confirm("Delete this attachment "+ item.fileId.filename,'Cancel','Delete',function(){},function(){
+				console.log("Delete");
+				httpService("/posts/attachment_delete",{id:item._id},function(json){
+					var index = $scope.attachments.indexOf(item);
+					$scope.attachments.splice(index,1);
+				})
+			})
+		}
 	});		
 	document.onpaste = function(event){
 		var items = (event.clipboardData || event.originalEvent.clipboardData).items;
@@ -111,15 +132,12 @@
 				reader.onload = function(event){
 					//console.log(event.target.result);
 					var data = event.target.result;
-					//$("#edpen_img").empty();
-	 				var image  = "<li><img  width='150px' height='150px' src='"+data+"'/></li>";
-	 				$(image).appendTo("#edpen_img");
-	 				/*
-	 				return this.canvas.toDataURL("image/png");
-	 				*/
+					
 	 				var url = "/posts/upload_image";
 	 				$.post(url,{imgdata:data},function(json){
 		 				console.log(json);
+		 				angular.element("#edit_form").scope().attachments.push({fileId:json.result,_id:0});
+		 				angular.element("#edit_form").scope().$apply();
 		 				var hidden = "<input type='hidden' name='attachments' value='"+json.result._id+"' />";
 		 				$(hidden).appendTo("#edit_form");
 	 				});
@@ -131,7 +149,43 @@
 		}
 	}
 </script>
+<script type="text/javascript">
+	
+jQuery(function($){
+	//CKEDITOR.replace("editor");
+	
 
+	var colorbox_params = {
+		reposition:true,
+		scalePhotos:true,
+		scrolling:false,
+		previous:'<i class="icon-arrow-left"></i>',
+		next:'<i class="icon-arrow-right"></i>',
+		close:'&times;',
+		current:'{current} of {total}',
+		maxWidth:'100%',
+		maxHeight:'100%',
+		onOpen:function(){
+			document.body.style.overflow = 'hidden';
+		},
+		onClosed:function(){
+			document.body.style.overflow = 'auto';
+		},
+		onComplete:function(){
+			$.colorbox.resize();
+		}
+	};
+
+	$('.ace-thumbnails [data-rel="colorbox"]').colorbox(colorbox_params);
+	$("#cboxLoadingGraphic").append("<i class='icon-spinner orange'></i>");//let's add a custom loading icon
+
+});
+	
+
+</script>
+<script>
+	CKEDITOR.replace("editor");	
+</script>
 
 
 <% include ../shared/footer %>
