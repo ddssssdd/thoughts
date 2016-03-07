@@ -110,8 +110,7 @@ siteSchema.statics.feed = function(site,entry,callback){
 		}
 	);
 }
-siteSchema.statics.list = function(page,size,callback){
-	debugger;
+siteSchema.statics.list = function(page,size,callback){	
 	page = parseInt( page || 1 );
 	size = parseInt( size || 10 );
 	Feed.find().lean().populate("site")

@@ -1,37 +1,20 @@
 <% include ../shared/header %>
 <div class="page-content">
 	<div class="row">
-		<div class="col-xs-12">
+		<div class="col-md-12" ng-controller="PostCtrl">
 			<!-- PAGE CONTENT BEGINS -->
 		
-			<table class="table table-bordered">
-				<thead>
-					<tr>
-						<td>User</td>
-						<td>Content</td>
-						<td>Date</td>
-						
-						<td></td>
-					</tr>
-				</thead>
-				<tbody>
-					<% for(var i=0;i<posts.length;i++){ var post = posts[i]; %>
-					<tr>
-						<td> <%= post.user.name %> </td>
-						<td> <%= post.content %> </td>
-						<td> <%= post.created_date %> </td>
-						
-						<td>
-							<a class="btn" href="edit/<%= post.id %>">Edit </a>
-							<a class="btn" href="remove/<%= post.id %>">Remove </a>
-						</td>
-					</tr>
-					<% } %>
-				</tbody>
-			</table>
-			<div class="panel">
-				<a href="/posts/index">Add</a>
+			<div class="button-group text-right">
+				<button class="button button-info" ng-click="add_new($event)">Add</button>
 			</div>
+			<ul class="list-group">
+			    <li class="list-group-item" ng-repeat="item in posts" >				    	
+			    	<a ng-href="/posts/edit/{{item._id}}" ><h4 ng-bind="item.title"> </h4></a> 					    				    	
+			    	<p ng-bind-html="html(item.content)" ng-click="open_item(item,$event);"></p>				    	
+			    	<h5 class="text-right red"> {{item.user.name}}  {{item.created_date | timeFormat}}</h5>
+			    </li>
+		    
+	  		</ul>
 			
 			<!-- PAGE CONTENT ENDS -->
 		</div>
@@ -40,6 +23,31 @@
 
 		
 <% include ../shared/load_public %>
+<script type="text/javascript">
+	angular.module("thoughts_app").controller("PostCtrl",function($scope,$sce,httpService,hotkeys,Message,userInfo,Pagination){
+		$scope.user = userInfo.user;
 
+		$scope.pagination = new Pagination("/posts/list",null, function(items){
+											$scope.posts = items;
+							})							
+							.page_size(30)
+							.load_data();
+
+		
+
+		$scope.add_new = function(event){
+			window.location.href = "/posts/edit/0";
+		}
+		
+		$scope.html = function(source){
+			return $sce.trustAsHtml(source);
+		}
+		$scope.open_item = function(item,event){
+			window.location.href = "/posts/edit/"+item._id;
+		}
+	});
+	
+	
+</script>	
 		
 <% include ../shared/footer %>

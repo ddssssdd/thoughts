@@ -70,20 +70,17 @@ router.get("/index",function(req,res){
 });
 
 router.get("/list",function(req,res){
-	
-	var post_model = require("mongoose").model("posts");
-	post_model.find({}).populate("user").exec(function(err,posts){
-		//res.json(posts);
-		res.render("posts/list",{posts:posts});
-	});
+	res.render("posts/list");	
 });
 router.post("/list",function(req,res){
-	
+	new require("../common/pagination")(req,res,"posts",null,"user",{created_date:-1});
+	/*
 	var post_model = require("mongoose").model("posts");
 	post_model.find({}).populate("user").exec(function(err,posts){
 		//res.json(posts);
 		res.json({status:err?false:true,result:posts});
 	});
+	*/
 });
 
 router.get("/attach_list",function(req,res){
@@ -112,9 +109,7 @@ router.post("/upload_file",multipartMiddleware,function(req,res){
 	}	
 
 });
-router.post("/upload_image2",multipartMiddleware,function(req,res){	
-	res.json(req.body);
-});
+
 
 router.post("/upload_image",multipartMiddleware,function(req,res){	
 	var data = req.body.imgdata;
@@ -197,7 +192,8 @@ router.post("/add", multipartMiddleware,function(req,res){
 	}
 	//res.json(req.body);
 	
-	var update = {content:req.body.content,
+	var update = {title:req.body.title,
+			content:req.body.content,
 			created_date:Date.now(),
 			user:req.session.user.id}
 	if (req.body.id){

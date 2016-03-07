@@ -14,15 +14,24 @@
 			<div  ng-controller="PostCtrl">
 
 				<form action="/posts/add" method="POST" enctype='multipart/form-data' id="edit_form">
-					<div class="row-fluild  text-right">
-						<div class="btn-group tool-bar">
+					<div class="row ">
+						<div class="col-md-4">
+						</div>
+						<div class="col-md-4 text-center">
+							<input type="text" placeholder="Title" style="width:100%" name="title" ng-model="post.title" />	
+						</div>
+						<div class="col-md-4 text-right">
+							<div class="btn-group tool-bar">
 							<button class="btn btn-sm btn-success" type="submit">
 								<i class="icon-ok"></i>
 								{{post_id=='0'?'Add':'Update'}}
 							</button>
-						</div>						
+							</div>
+						</div>
+												
 					</div>
 					<br/>
+					
 					<input type="hidden" name="id" value = "{{post._id}}" />
 					<textarea type="text" name="content" id="editor" width="100%" ng-model="post.content"></textarea>
 					<input type="file" name="file"/>
@@ -202,8 +211,8 @@ jQuery(function($){
 			// Configure your file manager integration. This example uses CKFinder 3 for PHP.
 			filebrowserBrowseUrl: '/ckfinder/ckfinder.html',
 			filebrowserImageBrowseUrl: '/ckfinder/ckfinder.html?type=Images',
-			filebrowserUploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Files',
-			filebrowserImageUploadUrl: '/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images',
+			filebrowserUploadUrl: '/posts/upload_file',
+			filebrowserImageUploadUrl: '/posts/upload_file',
 
 			// The following options are not necessary and are used here for presentation purposes only.
 			// They configure the Styles drop-down list and widgets to use classes.

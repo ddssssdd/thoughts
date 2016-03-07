@@ -41,10 +41,13 @@ router.post("/remove_site",function(req,res){
 	});
 });
 router.post("/news",function(req,res){
+	new require("../common/pagination")(req,res,"feed_items",null,"site",{pubDate:-1});
+	/*
 	var m = require("mongoose");
 	m.model("feed_sites").list(req.body.index || 1, req.body.size || 20,function(err,news){
 		res.json({status:err?false:true,result:news});
 	})
+*/
 });
 
 
