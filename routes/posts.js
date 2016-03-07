@@ -34,13 +34,18 @@ var move_and_save = function(id,filepath,size,type,fileoriginal,user_id,callback
 			});
 			upload.save(function(err,data){
 				if (!err){
-					mongoose.model("attachments").add(id,upload,function(raw){
+					if (id){
+						mongoose.model("attachments").add(id,upload,function(raw){
 							mongoose.model("attachments").findFile(id,function(err,data){
 								if (callback){
 									callback(data);
 								}
 							})	
-						});
+						});	
+					}else{
+						callback(upload);
+					}
+					
 					/*
 					mongoose.model("attachments").collection.insert(
 						{ownerId:id,fileId:upload.id}
@@ -95,13 +100,22 @@ router.post("/upload_file",multipartMiddleware,function(req,res){
 		var file = req.files[key];		
 		
 		if (file && file.size>0 && file.path!=''){
-			move_and_save(id,file.path,file.size,file.type,file.originalFilename,req.session.user.id,function(items){
-				res.json({status:true,result:items});
+			move_and_save(id,file.path,file.size,file.type,file.originalFilename,req.session.user.id,function(result){
+				if (id){
+					res.json({status:true,result:result});	
+				}else{
+					res.json({uploaded:1,fileName:result.filename,url:result.link})
+				}
+				
 			});
 		}		
 	}	
 
 });
+router.post("/upload_image2",multipartMiddleware,function(req,res){	
+	res.json(req.body);
+});
+
 router.post("/upload_image",multipartMiddleware,function(req,res){	
 	var data = req.body.imgdata;
 	data = data.substr(data.indexOf(",")+1);
