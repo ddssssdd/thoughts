@@ -46,6 +46,17 @@ var update_feeds = function(callback){
 	var m = require("mongoose");
 	var Site = m.model("feed_sites");      
 	var Promise = require("promise");
+	var remove_feeds = function(){
+		return new Promise(function(resolve,reject){
+			m.model("feed_items").remove().exec(function(err,raw){
+				if (err){
+					reject(err)
+				}else{
+					resolve(raw);
+				}
+			})
+		})
+	}
 	var get_sites =  function(){
 		return new Promise(function(resolve,reject){
 			Site.sites(function(err,sites){
@@ -85,7 +96,7 @@ var update_feeds = function(callback){
 		callback(results);	
 	}
 	
-	get_sites().then(function(sites){
+	remove_feeds().then(get_sites).then(function(sites){
 		/*var query = [];
 		sites.forEach(function(site){			
 			query.push(process_site(site));

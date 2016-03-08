@@ -196,14 +196,24 @@ jQuery(function($){
 <script>
 	CKEDITOR.replace("editor",{
 			toolbarGroups: [
-						{"name":"basicstyles","groups":["basicstyles"]},						
-						{"name":"styles","groups":["styles"]},
-						{"name":"paragraph","groups":["list","blocks"]},
-						{"name":"document","groups":["mode"]},
-						{"name":"insert","groups":["insert"]},
+						//{ name: 'clipboard',   groups: [ 'clipboard', 'undo' ] },
+					    //{ name: 'editing',     groups: [ 'find', 'selection', 'spellchecker' ] },
+					    
+					    
+					    //{ name: 'forms' },
+					    
+					    //{ name: 'document',    groups: [ 'mode', 'document', 'doctools' ] },
+					    //{ name: 'others' },
+					    
+					    { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup','undo' ] },
+					    { name: 'paragraph',   groups: [ 'list', 'indent', 'blocks', 'align' ] },
+					    { name: 'styles' },
+					    { name: 'colors' },
+					    { name: 'insert' },
+					    { name: 'tools' },
 					],
 			extraPlugins: 'uploadimage,image2',
-			height: 300,
+			height: 500,
 
 			// Upload images to a CKFinder connector (note that the response type is set to JSON).
 			uploadUrl: '/posts/upload_file',
