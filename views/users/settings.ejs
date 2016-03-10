@@ -49,22 +49,20 @@
 				</div>
 
 				<div class="profile-info-row">
-					<div class="profile-info-name"> About Me </div>
+					<div class="profile-info-name"> Avatar </div>
 
 					<div class="profile-info-value">
-						<span class="editable editable-click" id="about">Editable as WYSIWYG</span>
+						<img class="nav-user-photo" ng-src="{{user.avatar}}" width="80px" height="80px" onclick="click_avatar();">
+						<form action="/posts/upload_file" method="POST" enctype='multipart/form-data' >
+							<input type = "file" name="file" name="upload_avatar" style="opacity:0;"/>							
+						</form>
 					</div>
 				</div>
 			</div>
 
 		<!-- PAGE CONTENT ENDS -->
 		</div>
-		<div class="col-md-4">
-			<div class="profile-user-info profile-user-info-striped">
-				<div class="profile-info-row">
-				</div>
-			</div>
-		</div>
+		
 	</div>
 </div>	
 <% include ../shared/load_public %>
@@ -77,98 +75,107 @@
 	});
 </script>	
 <script type="text/javascript">
-			jQuery(function($) {
-			
-				//editables on first profile page
-				$.fn.editable.defaults.mode = 'inline';
-				$.fn.editableform.loading = "<div class='editableform-loading'><i class='light-blue icon-2x icon-spinner icon-spin'></i></div>";
-			    $.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="icon-ok icon-white"></i></button>'+
-			                                '<button type="button" class="btn editable-cancel"><i class="icon-remove"></i></button>';    
-				setTimeout(function(){
-					//editables 
-					var key = $("#username").data("key");
-				    $('#username').editable({
-						type: 'text',
-						pk: key,
-						url:'/users/settings_change',
-						name: 'name',
-						success: function(response, newValue) {
-						
-						}
-				    });	
-				    $('#email').editable({
-						type: 'text',
-						pk: key,
-						url:'/users/settings_change',
-						name: 'email',
-						success: function(response, newValue) {
-							angular.element("#item_title").scope().current.index = newValue;
-							angular.element("#item_title").scope().current.updated_date = Date.now();
-							angular.element("#item_title").scope().$apply();
-						}
-				    });	
-				    $('#password').editable({
-						type: 'text',
-						pk: key,
-						url:'/users/settings_change',
-						name: 'password',																		
-						success: function(response, newValue) {
-							
-							angular.element("#item_title").scope().current.description = newValue;
-							angular.element("#item_title").scope().current.updated_date = Date.now();
-							angular.element("#item_title").scope().$apply();
-						}
-				    });
-				    $('#points').editable({
-						type: 'text',
-						pk: key,
-						url:'/users/settings_change',
-						name: 'points',																		
-						success: function(response, newValue) {
-							
-							angular.element("#item_title").scope().current.description = newValue;
-							angular.element("#item_title").scope().current.updated_date = Date.now();
-							angular.element("#item_title").scope().$apply();
-						}
-				    });
-				    $(":file").change(function(){
-				    	var file = this.files[0];
-				    	if (file){
-				    		//console.log(file);
-				    		//$(this).closest("form").submit();
-				    		var formData = new FormData($(this).closest("form")[0]);
-				    		var index = layer.load();
-						 	$.ajax({
-						 		url:"/posts/upload_file",
-						 		dataType:'json',
-						 		crossDomain:true,
-						 		jsonp:false,
-						 		type:'POST',
-						 		success:function(json){
-						 			layer.close(index);
-						 			if(json.status){	 				
-						 				angular.element("#item_title").scope().current.attachments = json.result;
-						 				angular.element("#item_title").scope().$apply();
-						 			}else{
-						 				
-						 			}
-						 			
-						 		},
-						 		error:function(r){
-						 			
-						 		},
-						 		data:formData,
-						 		cache:false,
-						 		contentType:false,
-						 		processData:false
-						 		
-						 	});
-				    	}
-				    });		
-				   
-				},500);
-				
-			});
+	function click_avatar(){
+		var file = $("#upload_avatar");
+		try{
+			file.show().trigger("click");
+		}catch(err){
+			file.trigger("click");
+		}
+		
+	}
+	jQuery(function($) {
+		
+	
+		//editables on first profile page
+		$.fn.editable.defaults.mode = 'inline';
+		$.fn.editableform.loading = "<div class='editableform-loading'><i class='light-blue icon-2x icon-spinner icon-spin'></i></div>";
+	    $.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="icon-ok icon-white"></i></button>'+
+	                                '<button type="button" class="btn editable-cancel"><i class="icon-remove"></i></button>';    
+		setTimeout(function(){
+			//editables 
+			var key = $("#username").data("key");
+		    $('#username').editable({
+				type: 'text',
+				pk: key,
+				url:'/users/settings_change',
+				name: 'name',
+				success: function(response, newValue) {
+					angular.element("#username").scope().user.name = newValue;					
+					angular.element("#username").scope().$apply();
+				}
+		    });	
+		    $('#email').editable({
+				type: 'text',
+				pk: key,
+				url:'/users/settings_change',
+				name: 'email',
+				success: function(response, newValue) {
+					angular.element("#email").scope().user.email = newValue;					
+					angular.element("#email").scope().$apply();
+				}
+		    });	
+		    $('#password').editable({
+				type: 'text',
+				pk: key,
+				url:'/users/settings_change',
+				name: 'password',																		
+				success: function(response, newValue) {
+					
+					angular.element("#password").scope().user.password = newValue;					
+					angular.element("#password").scope().$apply();
+				}
+		    });
+		    $('#points').editable({
+				type: 'text',
+				pk: key,
+				url:'/users/settings_change',
+				name: 'points',																		
+				success: function(response, newValue) {
+					
+					angular.element("#points").scope().user.points = newValue;					
+					angular.element("#points").scope().$apply();
+				}
+		    });
+		    $(":file").change(function(){
+		    	var file = this.files[0];
+		    	if (file){
+		    		//console.log(file);
+		    		//$(this).closest("form").submit();
+		    		var formData = new FormData($(this).closest("form")[0]);
+		    		var index = layer.load();
+				 	$.ajax({
+				 		url:"/posts/upload_file",
+				 		dataType:'json',
+				 		crossDomain:true,
+				 		jsonp:false,
+				 		type:'POST',
+				 		success:function(json){
+				 			layer.close(index);
+				 			console.log(json);
+				 			$.post("/users/settings_change",{pk:key,name:'avatar',value:json.url},function(json){
+				 				console.log(json);
+				 				
+				 			})
+				 			angular.element("#username").scope().user.avatar = json.url;
+				 			angular.element("#username").scope().$apply();
+				 			
+				 		},
+				 		error:function(r){
+				 			
+				 		},
+				 		data:formData,
+				 		cache:false,
+				 		contentType:false,
+				 		processData:false
+				 		
+				 	});
+		    	}
+		    });		
+		   
+		},500);
+		
+	});
 </script>				
 
 

@@ -133,6 +133,18 @@ router.get("/logout",function(req,res){
 	res.redirect("/index");
 });
 
+router.post("/settings_change",function(req,res){
+	var m = require("mongoose");
+	var User = m.model("users");
+	var item = {};
+	item[req.body.name] = req.body.value;
+	User.update({_id:req.body.pk},{$set:item},function(err,data){
+		if (!err){
+			req.session.user[req.body.name] = req.body.value;
+		}
+		res.json({status:err?false:true,result:data});
+	})
+});
 
 router.get("/settings",function(req,res){	
 	res.render("users/settings");

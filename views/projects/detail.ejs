@@ -14,7 +14,7 @@
 								<a data-toggle="tab" href="#write" data-target="write" class="btn-new-mail">
 									<span class="btn bt1n-small btn-purple no-border">
 										<i class=" icon-envelope bigger-130"></i>
-										<span class="bigger-110">Create New Items</span>
+										<span class="bigger-110">Create New Item</span>
 									</span>
 								</a>
 							</li><!-- ./li-new-mail -->
@@ -118,11 +118,11 @@
 														<li class="divider"></li>
 
 														<li>
-															<a id="id-select-message-unread" href="#">Unread</a>
+															<a id="id-select-message-unread" href="#">Start</a>
 														</li>
 
 														<li>
-															<a id="id-select-message-read" href="#">Read</a>
+															<a id="id-select-message-read" href="#">In progress</a>
 														</li>
 													</ul>
 												</div>
@@ -245,29 +245,29 @@
 								</div>
 							</div>
 							<div class="tab-pane" id="tab_issues">
-								<div class="message-container">
-									<div class="message-container">
-										<div class="message-list" >
-											<div class="message-item" ng-repeat="item in issues" >
-												<label class="inline">
-													<input type="checkbox" class="ace" />
-													<span class="lbl"></span>
-												</label>
-
+								<div class="accordion-style1 panel-group" id="accordion">
+									<div class="panel panel-default" ng-repeat="item in issues">
+										<div class="panel-heading">
+											<div class="panel-title">
+												<h4>
+												<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapse{{item._id}}" aria-expanded="false">
+													<i class="icon-angle-down bigger-110" data-icon-hide="icon-angle-down" data-icon-show="icon-angle-right"></i>
+													&nbsp;{{item.title}} - {{item.created_date | date}}
+												</a>
+											</h4>
+											
 												
-												<span class="sender" ng-bind="item.status" style="width:30px"></span>
-												<span class="sender"><a ng-href="/issues/{{project.code}}-{{item.bref}}" ng-bind="item.title"></a></span>
-												<span class="time" ng-bind="item.created_date | date" style="width:200px;"></span>
+											
+											</div>
+										</div>
 
-												<span class="summary">
-													<span class="text" ng-bind="item.description">
-														
-													</span>
-												</span>
+										<div class="panel-collapse collapse" id="collapse{{item._id}}" aria-expanded="false">
+											<div class="panel-body" ng-bind="item.description">
 											</div>
 										</div>
 									</div>
 								</div>
+								
 							</div>
 						</div><!-- /.tab-content -->
 					</div><!-- /.tabbable -->
