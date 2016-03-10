@@ -9,7 +9,7 @@
 				<i class="icon-star orange2 mark-star"></i>
 
 				&nbsp;
-				<img class="middle"  src="/assets/avatars/avatar.png" width="32" />
+				<img class="middle"  ng-src="{{item.user.avatar}}" width="32" height="32" />
 				&nbsp;
 				<a href="#" class="sender" ng-bind="current.user.name"></a>
 
@@ -20,7 +20,21 @@
 				&nbsp;
 				<span class="editable editable-click" ng-bind="current.index" id="item_index"> </span>
 			</div>
+			<div style="float:left;margin-left:30px;">
 
+				<div class="btn-group">
+				  <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				    Action <span class="icon-caret-down icon-on-right"></span>
+				  </button>
+				  <ul class="dropdown-menu">
+				    <li><a href="#">In Progress</a></li>
+				    <li><a href="#">Waiting For Publish</a></li>
+				    <li><a href="#">Testing</a></li>
+				    <li role="separator" class="divider"></li>
+				    <li><a href="#">Finish</a></li>
+				  </ul>
+				</div>
+			</div>
 			<div class="action-buttons pull-right">
 				<a href="#">
 					<i class="icon-reply green icon-only bigger-130"></i>
